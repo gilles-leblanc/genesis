@@ -7,10 +7,10 @@ let convert (path:string) : string =
     let bitmap = new System.Drawing.Bitmap(path)
     let results = [ for y in 0 .. bitmap.Height - 1 -> convertLine y bitmap ] |> String.concat ", "
    
-    "{\"X\": \"" + bitmap.Width.ToString() + 
-    "\", \"Y\": \"" + bitmap.Width.ToString() + 
-    "\", \"values\":[" + results + "]}"
-
+    sprintf "{\"X\": \"%i\", \"Y\": \"%i\", \"values\":[%s]}" bitmap.Width 
+                                                              bitmap.Height 
+                                                              results
+                                                              
 [<EntryPoint>]
 let main argv = 
     let arglist = argv |> List.ofSeq

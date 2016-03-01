@@ -1,5 +1,6 @@
 module Tests
 
+// modules under test
 open HeightMap
 open MidpointDisplacement
 
@@ -19,7 +20,7 @@ let testNewHeightMapReturnZeroInitializedHm () =
 let testsToRun = 
     [
         ("test newHeightMap will return a 0 initialized height map",
-        testNewHeightMapReturnZeroInitializedHm)
+         testNewHeightMapReturnZeroInitializedHm)
     ]
 
 // test runner
@@ -29,6 +30,6 @@ let runSingleTest test =
     testFunction()
 
 let runTests =
-    testsToRun |> List.map (fun t -> runSingleTest t)
+    testsToRun |> List.map runSingleTest |> ignore
     printfn "%s" "Ran all tests."
     

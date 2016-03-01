@@ -1,4 +1,4 @@
-module terrain_gen
+module TerrainGen
 
 open HeightMap  
 open MidpointDisplacement

@@ -1,14 +1,14 @@
 module HeightMap
 
-type heightMap = {Size:int; Map:float array} with     
+type HeightMap = {Size:int; Map:float array} with     
     member this.Get x y =
         this.Map.[x * this.Size + y]      
         
     member this.Set x y value =
-        this.Map.[x * this.Size + y] = value
+        this.Map.[x * this.Size + y] <- value
 
 // returns a square matrix of size 2^n + 1
-let newHeightMap n : heightMap =
+let newHeightMap n : HeightMap =
     let size = ( pown 2 n ) + 1
     {Size = size; Map = Array.zeroCreate (size * size)}
 

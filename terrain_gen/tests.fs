@@ -7,29 +7,34 @@ open MidpointDisplacement
 // assert functions
 let assertAreEqual expected actual =
     printf "... "
-    if expected <> actual then printfn "%s" ("Test failed, expected " + expected.ToString() + ", actual " + actual.ToString())  
-    else printfn "Test passed"
+    if expected <> actual then 
+        printfn "Test failed, expected %A, actual %A" expected actual  
+    else 
+        printfn "Test passed"
 
 // tests
-let testNewHeightMapReturnZeroInitializedHm () = 
-    let hm = newHeightMap 5
-    let result = hm.Map |> Array.sum
-    assertAreEqual 0.0 result
+
+// // Note: this test will fail if the four corners are all initialized to 0.0. While this should be exceptional the test should be better designed.
+// let initCornersWillInitializeTheFourCorners () =
+//     let hm = newHeightMap 5
+//     initCorners hm    
 
 // tests included in run
 let testsToRun = 
     [
-        ("test newHeightMap will return a 0 initialized height map",
-         testNewHeightMapReturnZeroInitializedHm)
+        "test newHeightMap will return a 0 initialized height map",
+        fun() ->
+            let hm = newHeightMap 5
+            let result = hm.Map |> Array.sum
+            assertAreEqual 0.0 result
     ]
 
 // test runner
-let runSingleTest test = 
-    let testName, testFunction = test
+let runSingleTest (testName, testFunction) = 
     printf "%s" testName    
     testFunction()
 
-let runTests =
-    testsToRun |> List.map runSingleTest |> ignore
+let runTests testList =
+    testList |> List.iter runSingleTest
     printfn "%s" "Ran all tests."
     

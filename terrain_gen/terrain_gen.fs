@@ -6,5 +6,5 @@ open Tests
 
 [<EntryPoint>]
 let main argv =
-    runTests testsToRun   
+    consoleTestRunner testsToRun   
     0 

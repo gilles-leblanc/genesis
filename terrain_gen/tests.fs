@@ -5,19 +5,11 @@ open HeightMap
 open MidpointDisplacement
 
 // assert functions
-let assertAreEqual expected actual =
-    printf "... "
+let assertAreEqual expected actual : string =
     if expected <> actual then 
-        printfn "Test failed, expected %A, actual %A" expected actual  
+        sprintf "Test failed, expected %A, actual %A" expected actual  
     else 
-        printfn "Test passed"
-
-// tests
-
-// // Note: this test will fail if the four corners are all initialized to 0.0. While this should be exceptional the test should be better designed.
-// let initCornersWillInitializeTheFourCorners () =
-//     let hm = newHeightMap 5
-//     initCorners hm    
+        "Test passed"
 
 // tests included in run
 let testsToRun = 
@@ -31,10 +23,11 @@ let testsToRun =
 
 // test runner
 let runSingleTest (testName, testFunction) = 
-    printf "%s" testName    
-    testFunction()
+    sprintf "%s... %s" testName (testFunction())       
 
-let runTests testList =
-    testList |> List.iter runSingleTest
-    printfn "%s" "Ran all tests."
+let runTests testList =    
+    testList |> List.map (runSingleTest)
     
+let consoleTestRunner testList =
+    runTests testList |> List.iter (printfn "%s")
+    printfn "%s" "Ran all tests."

@@ -4,7 +4,9 @@ open HeightMap
 
 // set the four corners to random values
 let initCorners (hm:HeightMap) =
-    hm.Set 0 0 1.0
-    hm.Set 0 (hm.Size - 1) 1.0
-    hm.Set (hm.Size - 1) 0 1.0
-    hm.Set (hm.Size - 1) (hm.Size - 1) 1.0
+    let rnd = System.Random()    
+    
+    hm.Set 0 0 (rnd.NextDouble())
+    hm.Set 0 (hm.Size - 1) (rnd.NextDouble())
+    hm.Set (hm.Size - 1) 0 (rnd.NextDouble())
+    hm.Set (hm.Size - 1) (hm.Size - 1) (rnd.NextDouble())

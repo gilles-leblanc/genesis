@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="height_map.fs" />
     <Compile Include="midpoint_displacement.fs" />
+    <Compile Include="test_framework.fs" />
     <Compile Include="tests.fs" />
     <Compile Include="terrain_gen.fs" />
     <None Include="App.config" />

@@ -2,6 +2,7 @@ module TerrainGen
 
 open HeightMap  
 open MidpointDisplacement
+open TestFramework
 open Tests
 
 [<EntryPoint>]

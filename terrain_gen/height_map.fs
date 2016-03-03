@@ -13,5 +13,11 @@ let newHeightMap n : HeightMap =
     {Size = size; Map = Array.zeroCreate (size * size)}
 
 // normalize a height map to constrain all of it's values between 0.0 and 1.0
-// let normalize matrix =
-//     matrix |> Array.map (fun a -> )
+let normalize matrix =
+    matrix |> Array.map (fun a ->
+                            if a < 0.0 then
+                                0.0
+                            else if a > 1.0 then
+                                1.0
+                            else
+                                a)

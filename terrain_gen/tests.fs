@@ -35,5 +35,20 @@ let testsToRun =
         fun() ->
             let matrix = [| 2.0; 0.5; 1.0; -1.0; 0.0; 34.0; 23.0; 0.0; 0.0; -3.5; 0.0; 0.4; 0.3; 0.2; 1.1; -0.1; -0.2; -10.0; 10.0; 1.0; 0.2; 0.03; 0.004; 1.001; 0.8539 |]
             let normalized = normalize matrix 
-            assertAreEqual [| 1.0; 0.5; 1.0; 0.0; 0.0; 1.0; 1.0; 0.0; 0.0; 0.0; 0.0; 0.4; 0.3; 0.2; 1.0; 0.0; 0.0; 0.0; 1.0; 1.0; 0.2; 0.03; 0.004; 1.0; 0.8539 |] normalized                                               
+            assertAreEqual [| 1.0; 0.5; 1.0; 0.0; 0.0; 1.0; 1.0; 0.0; 0.0; 0.0; 0.0; 0.4; 0.3; 0.2; 1.0; 0.0; 0.0; 0.0; 1.0; 1.0; 0.2; 0.03; 0.004; 1.0; 0.8539 |] normalized;
+            
+        "convertFloatToRgb will convert 0.0 to r:0, g:0, b:0",
+        fun() ->
+            let red, green, blue = convertFloatToRgb 0.0
+            assertAreEqual (0, 0, 0) (red, green, blue);
+            
+        "convertFloatToRgb will convert 1.0 to r:255, g:255, b:255",
+        fun() ->
+            let red, green, blue = convertFloatToRgb 1.0
+            assertAreEqual (255, 255, 255) (red, green, blue);                                               
+            
+        "convertFloatToRgb will convert 0.5 to r:127, g:127, b:127",
+        fun() ->
+            let red, green, blue = convertFloatToRgb 0.5
+            assertAreEqual (127, 127, 127) (red, green, blue);
     ]

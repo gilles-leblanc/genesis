@@ -21,3 +21,9 @@ let normalize matrix =
                                 1.0
                             else
                                 a)
+
+// converts a float point ranging from 0.0 to 1.0 to a rgb value
+// 0.0 represents black and 1.0 white. The conversion is in greyscale 
+let convertFloatToRgb (pct:float) : int * int * int =
+    let greyscale = int (float 255 * pct)
+    (greyscale, greyscale, greyscale)

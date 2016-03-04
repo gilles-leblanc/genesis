@@ -11,9 +11,8 @@ let heightMapToPng (heightMap:HeightMap) (filename:string) =
     let png = new Bitmap(heightMap.Size, heightMap.Size)
     for x in [0..heightMap.Size-1] do
         for y in [0..heightMap.Size-1] do
-            // will need to convert float 1.0 to 255 with conversion function
-            // let greyScale = heightMap.Get x y 
-            png.SetPixel(x, y, Color.FromArgb(255, 0, 0, 0))
+            let red, green, blue = convertFloatToRgb (heightMap.Get x y) 
+            png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
     
     png.Save(filename, Imaging.ImageFormat.Png) |> ignore
 

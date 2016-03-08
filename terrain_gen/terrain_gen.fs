@@ -7,6 +7,10 @@ open MidpointDisplacement
 open TestFramework
 open Tests
 
+let heightMapToTxt (heightMap:HeightMap) (filename:string) =
+    let out = Array.init (heightMap.Size * heightMap.Size) (fun e -> heightMap.Map.[e].ToString())
+    System.IO.File.WriteAllLines(filename, out)
+
 let heightMapToPng (heightMap:HeightMap) (filename:string) =
     let png = new Bitmap(heightMap.Size, heightMap.Size)
     for x in [0..heightMap.Size-1] do
@@ -19,6 +23,8 @@ let heightMapToPng (heightMap:HeightMap) (filename:string) =
 [<EntryPoint>]
 let main argv =
     consoleTestRunner testsToRun
-    let map = newHeightMap 10
-    heightMapToPng map "out.png"  
+    let map = newHeightMap 3
+    generate map
+    heightMapToPng map "out.png"
+    heightMapToTxt map "out.txt"  
     0 

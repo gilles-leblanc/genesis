@@ -51,4 +51,22 @@ let testsToRun =
         fun() ->
             let red, green, blue = convertFloatToRgb 0.5
             assertAreEqual (127, 127, 127) (red, green, blue);
+            
+        "set will correctly change the values of an heightmap",
+        fun() ->
+            let hm = newHeightMap 2
+            hm.Set 1 2 0.5
+            assertAreEqual 0.5 (hm.Get 1 2)
+            
+        "diamond will set the midpoint value between each corner to the average of the corners plus the result of a function",
+        fun() ->
+            let variationFunction x = x + 1.0
+            let hm = newHeightMap 2
+            hm.Set 0 0 0.5
+            hm.Set 0 4 0.5
+            hm.Set 4 0 1.0
+            hm.Set 4 4 0.25
+            diamond hm (0, 0) (4, 0) (0, 4) (4, 4) variationFunction
+            let middleValues = [hm.Get 0 2; hm.Get 2 0; hm.Get 2 4; hm.Get 4 2]
+            assertAreEqual [1.5; 1.75; 1.375; 1.625] middleValues;
     ]

@@ -14,7 +14,6 @@ let newHeightMap n : HeightMap =
 
 // normalize a height map to constrain all of it's values between 0.0 and 1.0
 let normalize matrix =
-    // todo: check to replace with match
     matrix |> Array.map (fun a ->
                             match a with
                             | a when a < 0.0 -> 0.0

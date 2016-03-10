@@ -30,18 +30,24 @@ let diamond (hm:HeightMap) (c1) (c2) (c3) (c4) (variation) =
     let x4, y4 = c4   
         
     // set left middle
-    hm.Set x1 (middle y1 y3) (avg (hm.Get x1 y1) (hm.Get x3 y3) |> variation)      
+    hm.Set x1 (middle y1 y3) (avg (hm.Get x1 y1) (hm.Get x3 y3) |> variation |> normalizeValue)      
     
     // set upper middle
-    hm.Set (middle x1 x2) y1 (avg (hm.Get x1 y1) (hm.Get x2 y2) |> variation)
+    hm.Set (middle x1 x2) y1 (avg (hm.Get x1 y1) (hm.Get x2 y2) |> variation |> normalizeValue)
     
     // set right middle 
-    hm.Set x2 (middle y2 y4) (avg (hm.Get x2 y2) (hm.Get x4 y4) |> variation)
+    hm.Set x2 (middle y2 y4) (avg (hm.Get x2 y2) (hm.Get x4 y4) |> variation |> normalizeValue)
     
     // set lower middle
-    hm.Set (middle x3 x4) y3 (avg (hm.Get x3 y3) (hm.Get x4 y4) |> variation)           
+    hm.Set (middle x3 x4) y3 (avg (hm.Get x3 y3) (hm.Get x4 y4) |> variation |> normalizeValue)           
+
+// returns a floating number which is generated using bounds as a control of the range of possible values
+let randomize (rnd:System.Random) (bound:int) : float = 
+    float (rnd.Next(-bound, bound) / bound)
     
 let generate hm =
     initCorners hm
     let size = hm.Size - 1
-    diamond hm (0, 0) (size, 0) (0, size) (size, size) (fun x -> x)
+    let rnd = System.Random()
+    diamond hm (0, 0) (size, 0) (0, size) (size, size) (fun x -> x + (randomize rnd 100))
+    

@@ -12,13 +12,16 @@ let newHeightMap n : HeightMap =
     let size = ( pown 2 n ) + 1
     {Size = size; Map = Array.zeroCreate (size * size)}  
 
-// normalize a height map to constrain all of it's values between 0.0 and 1.0
-let normalize matrix =
-    matrix |> Array.map (fun a ->
-                            match a with
-                            | a when a < 0.0 -> 0.0
-                            | a when a > 1.0 -> 1.0
-                            | _ -> a)
+// normalize a single value to constrain it's value between 0.0 and 1.0
+let normalizeValue v =
+    match v with
+    | v when v < 0.0 -> 0.0
+    | v when v > 1.0 -> 1.0
+    | _ -> v
+
+// normalize an array to constrain all of it's values between 0.0 and 1.0
+let normalize (matrix:float array) =
+    matrix |> Array.map normalizeValue
 
 // converts a float point ranging from 0.0 to 1.0 to a rgb value
 // 0.0 represents black and 1.0 white. The conversion is in greyscale 

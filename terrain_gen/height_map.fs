@@ -19,10 +19,6 @@ let normalizeValue v =
     | v when v > 1.0 -> 1.0
     | _ -> v
 
-// normalize an array to constrain all of it's values between 0.0 and 1.0
-let normalize (matrix:float array) =
-    matrix |> Array.map normalizeValue
-
 // converts a float point ranging from 0.0 to 1.0 to a rgb value
 // 0.0 represents black and 1.0 white. The conversion is in greyscale 
 let convertFloatToRgb (pct:float) : int * int * int =

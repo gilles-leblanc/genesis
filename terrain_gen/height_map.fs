@@ -1,5 +1,8 @@
 module HeightMap
 
+// contains the height map types and common functions that can be re-used for 
+// different generation algorithms
+
 type HeightMap = {Size:int; Map:float array} with     
     member this.Get x y =
         this.Map.[x * this.Size + y]      
@@ -24,3 +27,16 @@ let normalizeValue v =
 let convertFloatToRgb (pct:float) : int * int * int =
     let greyscale = int (float 255 * pct)
     (greyscale, greyscale, greyscale)
+    
+// returns the average between two values    
+let avgf (a:float) (b:float) =
+    (a + b) / 2.0
+    
+// find the middle between two points in our map
+let avgi (a:int) (b:int) =
+    (a + b) / 2
+    
+// returns a floating number which is generated using bounds as a control of the range of possible values
+let randomize (rnd:System.Random) (bound:int) : float = 
+    float (rnd.Next(-bound, bound) / bound)
+    

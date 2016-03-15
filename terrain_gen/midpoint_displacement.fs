@@ -14,12 +14,7 @@ let initCorners (hm:HeightMap) =
     
 // set the middle values between each corner (c1 c2 c3 c4)
 // variation is a function that is applied on each pixel to modify it's value
-let middle (hm:HeightMap) (c1) (c2) (c3) (c4) (variation) =
-    let x1, y1 = c1
-    let x2, y2 = c2
-    let x3, y3 = c3
-    let x4, y4 = c4  
-        
+let middle (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
     // set left middle
     hm.Set x1 (avgi y1 y3) (avgf (hm.Get x1 y1) (hm.Get x3 y3) |> variation |> normalizeValue)      
     
@@ -33,12 +28,7 @@ let middle (hm:HeightMap) (c1) (c2) (c3) (c4) (variation) =
     hm.Set (avgi x3 x4) y3 (avgf (hm.Get x3 y3) (hm.Get x4 y4) |> variation |> normalizeValue)           
 
 // set the center value of the current matrix to the average of all middle values + variation function
-let center (hm:HeightMap) (c1) (c2) (c3) (c4) (variation) =
-    let x1, y1 = c1
-    let x2, y2 = c2
-    let x3, y3 = c3
-    let x4, y4 = c4  
-    
+let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
     // average height of left and right middle points
     let avgHorizontal = avgf (hm.Get x1 (avgi y1 y3)) (hm.Get x2 (avgi y2 y4))
     let avgVertical = avgf (hm.Get (avgi x1 x2) y1) (hm.Get (avgi x3 x4) y3)
@@ -56,6 +46,7 @@ let generate hm =
     let llCorner = (0, size)
     let lrCorner = (size, size)
     
+    // the lambda passed in as a parameter is temporary until a define a better function
     middle hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
     center hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
     

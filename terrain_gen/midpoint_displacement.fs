@@ -18,7 +18,7 @@ let middle (hm:HeightMap) (c1) (c2) (c3) (c4) (variation) =
     let x1, y1 = c1
     let x2, y2 = c2
     let x3, y3 = c3
-    let x4, y4 = c4   
+    let x4, y4 = c4  
         
     // set left middle
     hm.Set x1 (avgi y1 y3) (avgf (hm.Get x1 y1) (hm.Get x3 y3) |> variation |> normalizeValue)      
@@ -33,12 +33,29 @@ let middle (hm:HeightMap) (c1) (c2) (c3) (c4) (variation) =
     hm.Set (avgi x3 x4) y3 (avgf (hm.Get x3 y3) (hm.Get x4 y4) |> variation |> normalizeValue)           
 
 // set the center value of the current matrix to the average of all middle values + variation function
-// let center (hm:HeightMap) (c1) (c4) (variation) =
-//     
+let center (hm:HeightMap) (c1) (c2) (c3) (c4) (variation) =
+    let x1, y1 = c1
+    let x2, y2 = c2
+    let x3, y3 = c3
+    let x4, y4 = c4  
+    
+    // average height of left and right middle points
+    let avgHorizontal = avgf (hm.Get x1 (avgi y1 y3)) (hm.Get x2 (avgi y2 y4))
+    let avgVertical = avgf (hm.Get (avgi x1 x2) y1) (hm.Get (avgi x3 x4) y3)
+           
+    // set center value
+    hm.Set (avgi x1 x4) (avgi y1 y4) (avgf avgHorizontal avgVertical |> variation |> normalizeValue) 
     
 let generate hm =
-    initCorners hm
+    initCorners hm    
+    
     let size = hm.Size - 1
     let rnd = System.Random()
-    middle hm (0, 0) (size, 0) (0, size) (size, size) (fun x -> x + (randomize rnd 100))
+    let ulCorner = (0, 0) 
+    let urCorner = (size, 0)
+    let llCorner = (0, size)
+    let lrCorner = (size, size)
+    
+    middle hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
+    center hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
     

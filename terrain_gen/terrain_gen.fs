@@ -23,7 +23,7 @@ let heightMapToPng (heightMap:HeightMap) (filename:string) =
 [<EntryPoint>]
 let main argv =
     consoleTestRunner testsToRun
-    let map = newHeightMap 2
+    let map = newHeightMap 8
     generate map
     heightMapToPng map "out.png"
     heightMapToTxt map "out.txt"  

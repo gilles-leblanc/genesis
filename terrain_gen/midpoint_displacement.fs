@@ -16,16 +16,20 @@ let initCorners (hm:HeightMap) =
 // variation is a function that is applied on each pixel to modify it's value
 let middle (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
     // set left middle
-    hm.Set x1 (avgi y1 y3) (avgf (hm.Get x1 y1) (hm.Get x3 y3) |> variation |> normalizeValue)      
+    if hm.Get x1 (avgi y1 y3) = 0.0 then 
+        hm.Set x1 (avgi y1 y3) (avgf (hm.Get x1 y1) (hm.Get x3 y3) |> variation |> normalizeValue)      
     
     // set upper middle
-    hm.Set (avgi x1 x2) y1 (avgf (hm.Get x1 y1) (hm.Get x2 y2) |> variation |> normalizeValue)
+    if hm.Get (avgi x1 x2) y1 = 0.0 then
+        hm.Set (avgi x1 x2) y1 (avgf (hm.Get x1 y1) (hm.Get x2 y2) |> variation |> normalizeValue)
     
-    // set right middle 
-    hm.Set x2 (avgi y2 y4) (avgf (hm.Get x2 y2) (hm.Get x4 y4) |> variation |> normalizeValue)
+    // set right middle
+    if hm.Get x2 (avgi y2 y4) = 0.0 then 
+        hm.Set x2 (avgi y2 y4) (avgf (hm.Get x2 y2) (hm.Get x4 y4) |> variation |> normalizeValue)
     
     // set lower middle
-    hm.Set (avgi x3 x4) y3 (avgf (hm.Get x3 y3) (hm.Get x4 y4) |> variation |> normalizeValue)           
+    if hm.Get (avgi x3 x4) y3 = 0.0 then
+        hm.Set (avgi x3 x4) y3 (avgf (hm.Get x3 y3) (hm.Get x4 y4) |> variation |> normalizeValue)           
 
 // set the center value of the current matrix to the average of all middle values + variation function
 let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
@@ -35,18 +39,30 @@ let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
            
     // set center value
     hm.Set (avgi x1 x4) (avgi y1 y4) (avgf avgHorizontal avgVertical |> variation |> normalizeValue) 
+
+let rec displace (hm) (x1, y1) (x4, y4) (rnd) =
+    let ulCorner = (x1, y1) 
+    let urCorner = (x4, y1)
+    let llCorner = (x1, y4)
+    let lrCorner = (x4, y4)
+    
+    // the lambda passed in as a parameter is temporary until a define a better function
+    middle hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
+    center hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
+    
+    if x4 - x1 >= 2 then
+        let xAvg = avgi x1 x4
+        let yAvg = avgi y1 y4
+        displace hm (x1, y1) (xAvg, yAvg) rnd
+        displace hm (xAvg, y1) (x4, yAvg) rnd
+        displace hm (x1, yAvg) (xAvg, y4) rnd
+        displace hm (xAvg, yAvg) (x4, y4) rnd
     
 let generate hm =
     initCorners hm    
     
     let size = hm.Size - 1
     let rnd = System.Random()
-    let ulCorner = (0, 0) 
-    let urCorner = (size, 0)
-    let llCorner = (0, size)
-    let lrCorner = (size, size)
     
-    // the lambda passed in as a parameter is temporary until a define a better function
-    middle hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
-    center hm ulCorner urCorner llCorner lrCorner (fun x -> x + (randomize rnd 100))
+    displace hm (0, 0) (size, size) rnd
     

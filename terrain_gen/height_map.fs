@@ -25,18 +25,19 @@ let normalizeValue v =
 // converts a float point ranging from 0.0 to 1.0 to a rgb value
 // 0.0 represents black and 1.0 white. The conversion is in greyscale 
 let convertFloatToRgb (pct:float) : int * int * int =
-    let greyscale = int (float 255 * pct)
+    let greyscale = int (255.0 * pct)
     (greyscale, greyscale, greyscale)
     
 // returns the average between two values    
-let avgf (a:float) (b:float) =
-    (a + b) / 2.0
-    
-// find the middle between two points in our map
-let avgi (a:int) (b:int) =
-    (a + b) / 2
+let inline avg (a:^n) (b:^n) : ^n =
+    (a + b) / (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
     
 // returns a floating number which is generated using bounds as a control of the range of possible values
 let randomize (rnd:System.Random) (bound:int) : float = 
-    float (rnd.Next(-bound, bound) / bound)
+    // float (rnd.Next(-bound, bound) / bound)
     
+    // let max = float bound
+    // let min = -max 
+    // min + (rnd.NextDouble() * ((1.0 + max) - min))
+    
+    0.0

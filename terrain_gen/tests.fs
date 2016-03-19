@@ -25,7 +25,7 @@ let testsToRun =
         fun() ->
             // this test will fail if random returns 0.0 for all corners (very improbable but possible)
             let hm = newHeightMap 5
-            initCorners hm
+            initCorners hm (System.Random())
             let size = hm.Size - 1
             let corners = [hm.Get 0 0; hm.Get 0 size; hm.Get size 0; hm.Get size size]
             let result = List.reduce (fun acc elem -> acc + elem) corners 

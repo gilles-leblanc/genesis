@@ -24,7 +24,7 @@ let heightMapToPng (heightMap:HeightMap) (filename:string) =
 let main argv =
     consoleTestRunner testsToRun
     let map = newHeightMap 8
-    generate map
+    generate map 0.3 0.5
     heightMapToPng map "out.png"
     heightMapToTxt map "out.txt"  
     0 

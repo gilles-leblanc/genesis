@@ -40,13 +40,14 @@ let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
     // set center value
     hm.Set (avg x1 x4) (avg y1 y4) (avg avgHorizontal avgVertical |> variation) 
 
-let rec displace (hm) (x1, y1) (x4, y4) (rnd) (spread) =
+let rec displace (hm) (x1, y1) (x4, y4) (rnd) (spread) (spreadReduction) =
     let ulCorner = (x1, y1) 
     let urCorner = (x4, y1)
     let llCorner = (x1, y4)
     let lrCorner = (x4, y4)
     
     let variation = (fun x -> x + (randomize rnd spread)) >> normalizeValue
+    let adjustedSpread = spread * spreadReduction
     
     // the lambda passed in as a parameter is temporary until a define a better function
     middle hm ulCorner urCorner llCorner lrCorner variation 
@@ -55,15 +56,15 @@ let rec displace (hm) (x1, y1) (x4, y4) (rnd) (spread) =
     if x4 - x1 >= 2 then
         let xAvg = avg x1 x4
         let yAvg = avg y1 y4
-        displace hm (x1, y1) (xAvg, yAvg) rnd (spread * 0.5)
-        displace hm (xAvg, y1) (x4, yAvg) rnd (spread * 0.5)
-        displace hm (x1, yAvg) (xAvg, y4) rnd (spread * 0.5)
-        displace hm (xAvg, yAvg) (x4, y4) rnd (spread * 0.5)
+        displace hm (x1, y1) (xAvg, yAvg) rnd adjustedSpread spreadReduction
+        displace hm (xAvg, y1) (x4, yAvg) rnd adjustedSpread spreadReduction
+        displace hm (x1, yAvg) (xAvg, y4) rnd adjustedSpread spreadReduction
+        displace hm (xAvg, yAvg) (x4, y4) rnd adjustedSpread spreadReduction
     
-let generate hm =
+let generate hm startingSpread spreadReduction =
     let rnd = System.Random()
     let size = hm.Size - 1    
     
     initCorners hm rnd
-    displace hm (0, 0) (size, size) rnd 0.3
+    displace hm (0, 0) (size, size) rnd startingSpread spreadReduction
     

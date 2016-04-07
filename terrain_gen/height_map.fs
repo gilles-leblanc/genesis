@@ -33,11 +33,5 @@ let inline avg (a:^n) (b:^n) : ^n =
     (a + b) / (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
     
 // returns a floating number which is generated using bounds as a control of the range of possible values
-let randomize (rnd:System.Random) (bound:int) : float = 
-    // float (rnd.Next(-bound, bound) / bound)
-    
-    // let max = float bound
-    // let min = -max 
-    // min + (rnd.NextDouble() * ((1.0 + max) - min))
-    
-    0.0
+let randomize (rnd:System.Random) (bound:float) : float =   
+    (rnd.NextDouble() * 2.0 - 1.0) * bound

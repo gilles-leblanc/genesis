@@ -82,4 +82,4 @@ let terrainGenTests =
             center hm (0, 0) (4, 0) (0, 4) (4, 4) variationFunction
             let center = hm.Get 2 2
             assertAreEqual 0.7625 center
-]
+    ]

@@ -22,4 +22,4 @@ let runTests testList =
     
 let consoleTestRunner testList =
     runTests testList |> List.iter (printfn "%s")
-printfn "%s" "Ran all tests."
+    printfn "%s" "Ran all tests."

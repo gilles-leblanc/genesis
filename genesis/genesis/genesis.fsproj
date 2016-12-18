@@ -43,6 +43,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="name_gen/name_generator.fs" />
     <Compile Include="terrain_gen/height_map.fs" />
     <Compile Include="terrain_gen/midpoint_displacement.fs" />
     <Compile Include="genesis.fs" />

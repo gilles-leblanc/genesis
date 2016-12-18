@@ -48,6 +48,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLine.fs" />
+    <Compile Include="map_tools.fs" />
     <Compile Include="genesis_tools.fs" />
     <None Include="App.config" />
   </ItemGroup>

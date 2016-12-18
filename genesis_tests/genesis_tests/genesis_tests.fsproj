@@ -47,9 +47,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="test_framework.fs" />
-    <Compile Include="terrain_gen_tests.fs" />
-    <Compile Include="genesis_tests.fs" />
+    <Compile Include="TestFramework.fs" />
+    <Compile Include="TerrainGenTests.fs" />
+    <Compile Include="GenesisTests.fs" />
     <None Include="App.config" />
   </ItemGroup>
   <PropertyGroup>

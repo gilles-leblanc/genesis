@@ -67,4 +67,3 @@ let generate hm startingSpread spreadReduction =
     
     initCorners hm rnd
     displace hm (0, 0) (size, size) rnd startingSpread spreadReduction
-    

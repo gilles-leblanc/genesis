@@ -7,7 +7,7 @@ open HeightMap
 open MidpointDisplacement
 
 // tests included in run
-let testsToRun = 
+let terrainGenTests = 
     [
         "newHeightMap will return a 0 initialized height map",
         fun() ->
@@ -82,4 +82,4 @@ let testsToRun =
             center hm (0, 0) (4, 0) (0, 4) (4, 4) variationFunction
             let center = hm.Get 2 2
             assertAreEqual 0.7625 center
-    ]
+]

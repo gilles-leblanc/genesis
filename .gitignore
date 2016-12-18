@@ -234,3 +234,10 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Custom
+*.exe
+*.mdb
+*.dll
+build/
+deploy/

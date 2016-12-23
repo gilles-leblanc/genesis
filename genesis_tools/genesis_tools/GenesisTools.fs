@@ -13,13 +13,16 @@ let generateMap =
     heightMapToPng map "out.png"
     heightMapToTxt map "out.txt"  
 
+let generateName = 
+    buildProbabilityTables "media/greek_myth_sample"
+
 [<EntryPoint>]
 let main argv =
     let toolOption = parseCommandLine (argv |> Array.toList)
 
     match toolOption.tool with
     | MapGenerator -> generateMap
-    | NameGenerator -> printfn "Name Generator"
+    | NameGenerator -> generateName |> ignore
     | NoOptions -> ()
 
     0 

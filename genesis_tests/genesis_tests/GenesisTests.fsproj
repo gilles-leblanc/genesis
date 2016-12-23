@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="TestFramework.fs" />
     <Compile Include="TerrainGenTests.fs" />
+    <Compile Include="NameGenTests.fs" />
     <Compile Include="GenesisTests.fs" />
     <None Include="App.config" />
   </ItemGroup>

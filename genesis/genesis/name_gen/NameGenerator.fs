@@ -10,7 +10,6 @@ let readInputFile (filePath:string) =
 let buildOccurenceTable (input:IEnumerable<string>) =
     let occurenceTable = new Dictionary<string, int>()
     
-    // todo: investigate using fold with a map as the accumulator
     for s in input do 
         String.iter (fun x -> let occurence = x.ToString()
                               match occurenceTable.ContainsKey (occurence) with

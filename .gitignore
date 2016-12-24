@@ -241,3 +241,5 @@ _Pvt_Extensions
 *.dll
 build/
 deploy/
+out.txt
+out.png

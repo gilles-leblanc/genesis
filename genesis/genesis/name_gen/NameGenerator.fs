@@ -8,7 +8,7 @@ let readInputFile (filePath:string) =
     System.IO.File.ReadAllText(filePath)
 
 // Parses a string and count the total number of occurrences of substrings of size length
-let rec countOccurrences (input:string) (occurrenceTable:Dictionary<string, int>) length = 
+let rec countOccurrences (input:string) (occurrenceTable:Map<string, int>) length = 
     let adjLen = length - 1
     
     match input |> Seq.toList with
@@ -17,25 +17,25 @@ let rec countOccurrences (input:string) (occurrenceTable:Dictionary<string, int>
         let occurrence = (head :: other |> Array.ofList |> String)
 
         // add current occurrence to the occurrence table
-        match occurrenceTable.ContainsKey (occurrence) with
-        | true -> occurrenceTable.[occurrence] <- occurrenceTable.[occurrence] + 1
-        | false -> occurrenceTable.Add(occurrence, 1)
+        let updatedMap = match occurrenceTable.ContainsKey (occurrence) with
+                         | true -> occurrenceTable.Add(occurrence, occurrenceTable.[occurrence] + 1)
+                         | false -> occurrenceTable.Add(occurrence, 1)
 
         // call the function recursively with the rest of the string
-        countOccurrences (tail |> Array.ofList |> String) occurrenceTable length
+        countOccurrences (tail |> Array.ofList |> String) updatedMap length
     | _ -> occurrenceTable
 
 // build frequency table    
     // map again with actual / total
-let buildFrenquencyTable (occurrenceTable:Dictionary<string, int>) =
+let buildFrenquencyTable (occurrenceTable:Map<string, int>) =
     // fold occurence dict, count total
-    let total = occurrenceTable |> Seq.fold (fun acc (KeyValue(k, v)) -> acc + v) 0    
+    let total = Map.fold (fun acc key value -> acc + value) 0 occurrenceTable
     total
 
 
 // Given an input file create a probability table for the different letters in the file
 let buildProbabilityTable (filePath:string) length =
     let input = readInputFile filePath
-    let initialDictionary = new Dictionary<string, int>()
+    let initialDictionary = Map.empty
 
     countOccurrences input initialDictionary length

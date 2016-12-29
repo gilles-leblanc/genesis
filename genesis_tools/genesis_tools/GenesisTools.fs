@@ -14,7 +14,7 @@ let generateMap =
     heightMapToTxt map "out.txt"  
 
 let generateName = 
-    buildProbabilityTables "media/greek_myth_sample"
+    buildProbabilityTable "media/greek_myth_sample"
 
 [<EntryPoint>]
 let main argv =

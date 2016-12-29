@@ -25,8 +25,16 @@ let rec countOccurrences (input:string) (occurrenceTable:Dictionary<string, int>
         countOccurrences (tail |> Array.ofList |> String) occurrenceTable length
     | _ -> occurrenceTable
 
+// build frequency table    
+    // map again with actual / total
+let buildFrenquencyTable (occurrenceTable:Dictionary<string, int>) =
+    // fold occurence dict, count total
+    let total = occurrenceTable |> Seq.fold (fun acc (KeyValue(k, v)) -> acc + v) 0    
+    total
+
+
 // Given an input file create a probability table for the different letters in the file
-let buildProbabilityTables (filePath:string) length =
+let buildProbabilityTable (filePath:string) length =
     let input = readInputFile filePath
     let initialDictionary = new Dictionary<string, int>()
 

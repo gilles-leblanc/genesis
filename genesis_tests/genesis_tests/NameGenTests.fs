@@ -84,30 +84,26 @@ let nameGenTests =
 
         "buildFrenquencyTable will correctly compute values with 1 letter substrings",
         fun() ->
-            let map = Map.empty
-            let probabilities = countOccurrences " James John Max Gary Jess Gilles Mary " map 1 
-                                |> buildFrenquencyTable
+            let probabilities = buildFrequencyTableTable " James John Max Gary Jess Gilles Mary " 1 
+
             assertAreEqual 0.210526 probabilities.[" "]            
             
         "buildFrenquencyTable will correctly compute values with 1 letter substrings (2)",
         fun() ->
-            let map = Map.empty
-            let probabilities = countOccurrences " James John Max Gary Jess Gilles Mary " map 1 
-                                |> buildFrenquencyTable
+            let probabilities = buildFrequencyTableTable " James John Max Gary Jess Gilles Mary " 1 
+                                
             assertAreEqual 0.026316 probabilities.["m"]
 
         "buildFrenquencyTable will correctly compute values with 1 letter substrings (3)",
         fun() ->
-            let map = Map.empty
-            let probabilities = countOccurrences " James John Max Gary Jess Gilles Mary " map 1 
-                                |> buildFrenquencyTable
+            let probabilities = buildFrequencyTableTable " James John Max Gary Jess Gilles Mary " 1 
+                                
             assertAreEqual 0.078947 probabilities.["J"]
 
         "buildFrenquencyTable will correctly compute values with 2 letter substrings",
         fun() ->
-            let map = Map.empty
-            let probabilities = countOccurrences " James John Max Gary Jess Gilles Mary " map 2
-                                |> buildFrenquencyTable
+            let probabilities = buildFrequencyTableTable " James John Max Gary Jess Gilles Mary " 2
+                                
             assertAreEqual 0.054054 probabilities.["ar"]       
 
         // "buildCumulativeFrenquencyTable will correctly compute cumulative properties for substrings",

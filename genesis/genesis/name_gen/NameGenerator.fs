@@ -34,11 +34,31 @@ let buildFrenquencyTable (occurrenceTable:Map<string, float>) =
     // map over previous map and replace values with count / total count
     Map.map (fun key value -> Math.Round(value / total, 6)) occurrenceTable
 
+// Return a new probability table with the key value pair added.
+let addProbability (key:string) value (probabilityTable:Map<string, Map<string, float>>) length =
+    let mainKey = Seq.take length key |> String.Concat
+    let subKey = Seq.skip length key |> String.Concat
+    
+    match probabilityTable.ContainsKey(mainKey) with
+    | true -> let subMap = Map.find mainKey probabilityTable
+              match subMap.ContainsKey(subKey) with
+              | true -> failwith "subkey already added in probabilityTable"
+              | false -> let newSubMap = subMap.Add(subKey, value)
+                         probabilityTable.Add(mainKey, subMap)
+    | false -> let subMap = Map.empty.Add(subKey, value)
+               probabilityTable.Add(mainKey, subMap)
 
 // Given an input file create a probability table for the different letters in the file
-let buildProbabilityTable (filePath:string) length =
+let buildProbabilityTable (filePath:string) length : Map<string, Map<string, float>> =
     let input = readInputFile filePath
     let initialDictionary = Map.empty
 
-    countOccurrences input initialDictionary length 
-    |> buildFrenquencyTable
+    let frequencyTable = countOccurrences input initialDictionary length 
+                         |> buildFrenquencyTable
+
+    let adjLen = length - 1
+    let probabilityTable = Map.empty
+
+    Map.fold (fun state key value -> addProbability key value state adjLen) probabilityTable frequencyTable
+    //Map.map (fun key value -> addProbability key value probabilityTable adjLen) frequencyTable
+    

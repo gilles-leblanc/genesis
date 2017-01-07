@@ -109,4 +109,13 @@ let nameGenTests =
             let probabilities = countOccurrences " James John Max Gary Jess Gilles Mary " map 2
                                 |> buildFrenquencyTable
             assertAreEqual 0.054054 probabilities.["ar"]       
+
+        // "buildCumulativeFrenquencyTable will correctly compute cumulative properties for substrings",
+        // fun() ->
+        //     let map = Map.empty
+        //     let probabilities = countOccurrences " James John Max Gary Jess Gilles Mary " map 2
+        //                         |> buildFrenquencyTable
+        //                         |> buildCumulativeFrenquencyTable
+        //     assertAreEqual 0.428571 probabilities
+
     ]        

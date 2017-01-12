@@ -51,7 +51,7 @@ let cumulate map =
     cumulativeSubMap
 
 // Given an input string creates a probability table for the different letters in the string.
-let buildProbabilityTable (input:string) length  = // : Map<string, Map<string, float>>
+let buildProbabilityTable (input:string) length : Map<string, Map<string, float>> =  
     let occurrencesTable = countOccurrences input Map.empty length 
     let adjLen = length - 1
 

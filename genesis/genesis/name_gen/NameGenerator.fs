@@ -22,6 +22,7 @@ let rec countOccurrences (input:string) (occurrenceTable:Map<string, float>) len
     | _ -> occurrenceTable
 
 // Return a new probability table with the key value pair added.
+// Given letter X, a probability table gives a percentage for letter Y to appear following letter X.
 let addProbability (key:string) value (probabilityTable:Map<string, Map<string, float>>) length =
     let mainKey = Seq.take length key |> String.Concat
     let subKey = Seq.skip length key |> String.Concat
@@ -31,27 +32,33 @@ let addProbability (key:string) value (probabilityTable:Map<string, Map<string, 
               match subMap.ContainsKey(subKey) with
               | true -> failwith "subkey already added in probabilityTable"
               | false -> let newSubMap = subMap.Add(subKey, value)
-                         probabilityTable.Add(mainKey, subMap)
+                         probabilityTable.Add(mainKey, newSubMap)
     | false -> let subMap = Map.empty.Add(subKey, value)
                probabilityTable.Add(mainKey, subMap)
 
-// Given an input string create a frequency table for the different letters in the string
-let buildFrequencyTableTable (input:string) length =
-    let initialDictionary = Map.empty
-    let total = input.Length - length + 1 |> float
-
-    let frequencyTable = countOccurrences input initialDictionary length 
-                         |> Map.map (fun key value -> Math.Round(value / total, 6))
-
-    frequencyTable
+// Cumulate the submap to transform the probabilities from 0.25 0.25 0.5 to 0.25 0.75 1.0.
+// Probabilities -> Cumulative probabilities
+let cumulate map =
+    let total = Map.fold (fun acc key value -> acc + value) 0.0 map
+        
+    let _, cumulativeSubMap = 
+        Map.map (fun key value -> Math.Round(value / total, 6)) map
+        // fold into a cumulative result
+        |> Map.fold (fun (t, (m:Map<string, float>)) key value -> 
+                        (t + value, m.Add(key, t + value))
+                    ) (0.0, Map.empty)
     
-// Given an input file create a probability table for the different letters in the file
-let buildProbabilityTable (filePath:string) length = // : Map<string, Map<string, float>>
+    cumulativeSubMap
+
+// Given an input string creates a probability table for the different letters in the string.
+let buildProbabilityTable (input:string) length  = // : Map<string, Map<string, float>>
+    let occurrencesTable = countOccurrences input Map.empty length 
+    let adjLen = length - 1
+
+    Map.fold (fun acc key value -> addProbability key value acc adjLen) Map.empty occurrencesTable
+    |> Map.map (fun key value -> cumulate value)
+
+// Given an input file path, creates a probability table calling buildProbabilityTable
+let buildProbabilityTableFromFile (filePath:string) length = 
     let input = System.IO.File.ReadAllText(filePath)
-    buildFrequencyTableTable input length
-
-    // let adjLen = length - 1
-    // let probabilityTable = Map.empty
-
-    // Map.fold (fun state key value -> addProbability key value state adjLen) probabilityTable frequencyTable
-    //Map.map (fun key value -> addProbability key value probabilityTable adjLen) frequencyTable
+    buildProbabilityTable input length

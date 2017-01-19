@@ -108,7 +108,6 @@ let nameGenTests =
             assertAreEqual 1.0 probabilities.["G"].["i"]
 
         // todo: test that checks that the results are case insensitive (they aren't...)
-        // todo: more tests
         // todo: round 0.9999 to 1.0
         // todo: actual name generation
     ]        

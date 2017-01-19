@@ -42,13 +42,16 @@ let cumulate map =
     let total = Map.fold (fun acc key value -> acc + value) 0.0 map
         
     let _, cumulativeSubMap = 
-        Map.map (fun key value -> Math.Round(value / total, 6)) map
+        Map.map (fun key value -> value / total) map
         // fold into a cumulative result
         |> Map.fold (fun (t, (m:Map<string, float>)) key value -> 
                         (t + value, m.Add(key, t + value))
                     ) (0.0, Map.empty)
     
-    cumulativeSubMap
+    Map.map (fun key value -> if value >= 0.99 
+                              then 1.0
+                              else Math.Round(value, 6)
+            ) cumulativeSubMap
 
 // Given an input string creates a probability table for the different letters in the string.
 let buildProbabilityTable (input:string) length : Map<string, Map<string, float>> =  

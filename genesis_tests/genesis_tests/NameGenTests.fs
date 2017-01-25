@@ -106,8 +106,4 @@ let nameGenTests =
         fun() ->
             let probabilities = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
             assertAreEqual 1.0 probabilities.["G"].["i"]
-
-        // todo: test that checks that the results are case insensitive (they aren't...)
-        // todo: round 0.9999 to 1.0
-        // todo: actual name generation
     ]        

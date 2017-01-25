@@ -24,8 +24,8 @@ let rec countOccurrences (input:string) (occurrenceTable:Map<string, float>) len
 // Return a new probability table with the key value pair added.
 // Given letter X, a probability table gives a percentage for letter Y to appear following letter X.
 let addProbability (key:string) value (probabilityTable:Map<string, Map<string, float>>) length =
-    let mainKey = Seq.take length key |> String.Concat
-    let subKey = Seq.skip length key |> String.Concat
+    let mainKey = Seq.take 1 key |> String.Concat
+    let subKey = Seq.skip 1 key |> String.Concat
     
     match probabilityTable.ContainsKey(mainKey) with
     | true -> let subMap = Map.find mainKey probabilityTable

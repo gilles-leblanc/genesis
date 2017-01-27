@@ -12,7 +12,7 @@ let parseCommandLine args =
         printfn "No option specified"
         { tool = NoOptions }
     | "/map"::xs -> { tool = MapGenerator }
-    | "/name"::xs -> { tool = NameGenerator }
+    | "/name"::xs -> { tool = NameGenerator }    
     | x::xs ->  
         printfn "Option '%s' is unrecognized" x
         { tool = NoOptions }

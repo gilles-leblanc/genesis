@@ -26,8 +26,8 @@ let main argv =
     let toolOption = parseCommandLine (argv |> Array.toList)
 
     match toolOption.tool with
-    | MapGenerator -> generateMap |> ignore
-    | NameGenerator -> generateName |> ignore
+    | MapGenerator -> generateMap () |> ignore
+    | NameGenerator -> generateName () |> ignore
     | NoOptions -> ()
 
     0 

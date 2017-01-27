@@ -2,6 +2,8 @@ NUGET
   remote: https://www.nuget.org/api/v2
     FAKE (4.47)
     FSharp.Core (4.0.0.1)
+    MathNet.Numerics (3.17)
+      TaskParallelLibrary (>= 1.0.2856) - framework: net35
     Microsoft.CSharp (4.3) - framework: >= netstandard10
       System.Collections (>= 4.3) - framework: dnxcore50, >= netstandard13
       System.Diagnostics.Debug (>= 4.3) - framework: dnxcore50, >= netstandard13
@@ -238,3 +240,4 @@ NUGET
       System.Text.Encoding (>= 4.3) - framework: dnxcore50, >= netstandard13
       System.Threading (>= 4.3) - framework: dnxcore50, >= netstandard13
       System.Xml.ReaderWriter (>= 4.3) - framework: dnxcore50, netstandard10, >= netstandard13
+    TaskParallelLibrary (1.0.2856) - framework: net35

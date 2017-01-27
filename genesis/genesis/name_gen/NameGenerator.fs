@@ -3,6 +3,11 @@ module NameGenerator
 open System
 open System.Collections.Generic   
 
+open NameLength
+
+type ProbabilityTable = { probabilities:Map<string, Map<string, float>>; 
+                          nameLengthInfo:NameLengthInfo }
+
 // Parses a string and count the total number of occurrences of substrings of size length
 let rec countOccurrences (input:string) (occurrenceTable:Map<string, float>) length = 
     let adjLen = length - 1
@@ -54,14 +59,23 @@ let cumulate map =
             ) cumulativeSubMap
 
 // Given an input string creates a probability table for the different letters in the string.
-let buildProbabilityTable (input:string) length : Map<string, Map<string, float>> =  
+let buildProbabilityTable (input:string) length : ProbabilityTable =  
+    let nameLengths = getNameLengthInfo input
+
     let occurrencesTable = countOccurrences input Map.empty length 
     let adjLen = length - 1
 
-    Map.fold (fun acc key value -> addProbability key value acc adjLen) Map.empty occurrencesTable
-    |> Map.map (fun key value -> cumulate value)
+    let table = Map.fold (fun acc key value -> addProbability key value acc adjLen) 
+                         Map.empty occurrencesTable
+                |> Map.map (fun key value -> cumulate value)
+    
+    { probabilities = table; nameLengthInfo = nameLengths }
 
 // Given an input file path, creates a probability table calling buildProbabilityTable
-let buildProbabilityTableFromFile (filePath:string) length = 
+let buildProbabilityTableFromFile (filePath:string) length : ProbabilityTable = 
     let input = System.IO.File.ReadAllText(filePath)
     buildProbabilityTable input length
+
+let generateRandomName (probabilityTable:ProbabilityTable) : string = 
+    let nameLength = getNameLength probabilityTable.nameLengthInfo    
+    ""

@@ -2,4 +2,5 @@ source https://www.nuget.org/api/v2
 
 nuget FAKE
 nuget FSharp.Core
+nuget MathNet.Numerics
 nuget Newtonsoft.Json

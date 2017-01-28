@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Name>genesis</Name>
@@ -42,11 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="name_gen/NameLength.fs" />
+    <Compile Include="name_gen/ProbabilityTable.fs" />
     <Compile Include="name_gen/NameGenerator.fs" />
     <Compile Include="terrain_gen/HeightMap.fs" />
     <Compile Include="terrain_gen/MidpointDisplacement.fs" />
     <Compile Include="genesis.fs" />
-    <None Include="Script.fsx" />
+    <None Include="Script.fsx" />    
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Choose>

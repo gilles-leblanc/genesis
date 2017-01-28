@@ -5,6 +5,7 @@ open Newtonsoft.Json
 open CommandLine
 open MapTools
 
+open ProbabilityTable
 open NameGenerator
 open HeightMap  
 open MidpointDisplacement
@@ -16,10 +17,11 @@ let generateMap () =
     heightMapToTxt map "out.txt"  
 
 let generateName () = 
-    // buildProbabilityTable "media/greek_myth_sample"
-    let table = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
-    let json = JsonConvert.SerializeObject(table)
-    printfn "%s" json
+    let table = buildProbabilityTableFromFile "media/greek_myth_sample" 3
+    // let table = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
+    let json = JsonConvert.SerializeObject(table)    
+    // printfn "%s" json
+    printfn "%s" (generateRandomName table)
 
 [<EntryPoint>]
 let main argv =

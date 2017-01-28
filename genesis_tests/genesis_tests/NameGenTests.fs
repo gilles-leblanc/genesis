@@ -5,6 +5,7 @@ open System.Collections.Generic
 open TestFramework
 
 // modules under test
+open ProbabilityTable
 open NameGenerator
 
 // tests included in run

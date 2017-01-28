@@ -3,8 +3,7 @@ module MidpointDisplacement
 open HeightMap
 
 // set the four corners to random values
-let initCorners (hm:HeightMap) (rnd) =
-    let rnd = System.Random()    
+let initCorners (hm:HeightMap) (rnd:System.Random) =
     let size = hm.Size   
     
     hm.Set 0 0 (rnd.NextDouble())

@@ -1,5 +1,6 @@
 module NameGenTests
 
+open System
 open System.Collections.Generic
 
 open TestFramework
@@ -101,10 +102,22 @@ let nameGenTests =
         "buildProbabilityTable will correctly compute 2 letter substrings 4",
         fun() ->
             let {probabilities = probabilities} = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
-            assertAreEqual 0.5 probabilities.["G"].["a"]
+            assertAreEqual 0.5 probabilities.["g"].["a"]
 
         "buildProbabilityTable will correctly compute 2 letter substrings 5",
         fun() ->
             let {probabilities = probabilities} = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
-            assertAreEqual 1.0 probabilities.["G"].["i"]
+            assertAreEqual 1.0 probabilities.["g"].["i"]
+
+        "Names start with upper case letter",
+        fun() ->
+            let probabilities = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
+            let name = generateRandomName probabilities
+            assertIsTrue (Char.IsUpper name.[0])
+
+        "The rest of the name is in lower case",
+        fun() ->
+            let probabilities = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
+            let restOfName = (generateRandomName probabilities).[1..]
+            assertIsTrue (Seq.forall Char.IsLower restOfName)            
     ]        

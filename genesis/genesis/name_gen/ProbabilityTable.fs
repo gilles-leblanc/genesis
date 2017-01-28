@@ -31,15 +31,17 @@ let rec countOccurrences (input:string) (occurrenceTable:Map<string, float>) len
 let addProbability (key:string) value (probabilityTable:Map<string, Map<string, float>>) length =
     let mainKey = key.[0].ToString() 
     let subKey = key.[1..] 
-    
-    match probabilityTable.ContainsKey(mainKey) with
-    | true -> let subMap = Map.find mainKey probabilityTable
-              match subMap.ContainsKey(subKey) with
-              | true -> failwith "subkey already added in probabilityTable"
-              | false -> let newSubMap = subMap.Add(subKey, value)
-                         probabilityTable.Add(mainKey, newSubMap)
-    | false -> let subMap = Map.empty.Add(subKey, value)
-               probabilityTable.Add(mainKey, subMap)
+
+    match Seq.forall Char.IsLower subKey with 
+    | false -> probabilityTable   // do not add a subkey containing a white space
+    | _ -> match probabilityTable.ContainsKey(mainKey) with
+           | true -> let subMap = Map.find mainKey probabilityTable
+                     match subMap.ContainsKey(subKey) with
+                     | true -> failwith "subkey already added in probabilityTable"
+                     | false -> let newSubMap = subMap.Add(subKey, value)
+                                probabilityTable.Add(mainKey, newSubMap)
+           | false -> let subMap = Map.empty.Add(subKey, value)
+                      probabilityTable.Add(mainKey, subMap)
 
 // Cumulate the submap to transform to probabilities of the form 0.75 0.25 0.0.
 // Notice that the order is decreasing. Instead of using the more tradational increasing order

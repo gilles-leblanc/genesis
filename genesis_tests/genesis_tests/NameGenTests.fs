@@ -87,17 +87,17 @@ let nameGenTests =
         "buildProbabilityTable will correctly compute 2 letter substrings 1",
         fun() ->
             let {probabilities = probabilities} = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
-            assertAreEqual 0.25 probabilities.["a"].["m"]
+            assertAreEqual 0.75 probabilities.["a"].["m"]
 
         "buildProbabilityTable will correctly compute 2 letter substrings 2",
         fun() ->
             let {probabilities = probabilities} = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
-            assertAreEqual 0.75 probabilities.["a"].["r"]
+            assertAreEqual 0.25 probabilities.["a"].["r"]
 
         "buildProbabilityTable will correctly compute 2 letter substrings 3",
         fun() ->
             let {probabilities = probabilities} = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
-            assertAreEqual 1.0 probabilities.["a"].["x"]
+            assertAreEqual 0.0 probabilities.["a"].["x"]
 
         "buildProbabilityTable will correctly compute 2 letter substrings 4",
         fun() ->
@@ -107,7 +107,7 @@ let nameGenTests =
         "buildProbabilityTable will correctly compute 2 letter substrings 5",
         fun() ->
             let {probabilities = probabilities} = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
-            assertAreEqual 1.0 probabilities.["g"].["i"]
+            assertAreEqual 0.0 probabilities.["g"].["i"]
 
         "Names start with upper case letter",
         fun() ->

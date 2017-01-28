@@ -63,7 +63,7 @@ let cumulate map =
 let buildProbabilityTable (input:string) length : ProbabilityTable =  
     let nameLengths = getNameLengthInfo input
 
-    let occurrencesTable = countOccurrences input Map.empty length 
+    let occurrencesTable = countOccurrences (input.ToLower()) Map.empty length 
     let adjLen = length - 1
 
     let table = Map.fold (fun acc key value -> addProbability key value acc adjLen) 

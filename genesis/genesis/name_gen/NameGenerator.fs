@@ -33,4 +33,9 @@ let rec buildName (nameSoFar:string) (charLeft:int) (probabilityTable:Probabilit
 // Given a pre-built probability table generates a random name.
 let generateRandomName (probabilityTable:ProbabilityTable) : string = 
     let nameLength = int (getNameLength probabilityTable.nameLengthInfo)
-    buildName " " nameLength probabilityTable
+    // We pass in the whitespace char to start the name as this will allow us to find letters after
+    // spaces in our probability table. These are the letters that start name. 
+    // We must remember to take this whitespace into account in our nameLength and later when 
+    // returning the name
+    let lowerCaseName = buildName " " (nameLength + 1) probabilityTable
+    lowerCaseName.[1].ToString().ToUpper() + lowerCaseName.[2..]

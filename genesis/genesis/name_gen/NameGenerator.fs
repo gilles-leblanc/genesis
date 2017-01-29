@@ -25,9 +25,12 @@ let rec buildName (nameSoFar:string) (charLeft:int) (probabilityTable:Probabilit
     match probabilityTable.probabilities.ContainsKey(lastChar) with
     | true -> let addition = pickString probabilityTable.probabilities.[lastChar]
               let newName = nameSoFar + addition
-              match (addition, charLeft) with
-              | (add, left) when left > add.Length -> buildName newName 0 probabilityTable
-              | _ -> newName
+              let newCharLeft = charLeft - addition.Length
+              
+              match newCharLeft with
+              | ln when ln > 0 -> buildName newName newCharLeft probabilityTable // we need more
+              | ln when ln < 0 -> newName.[0..newName.Length - 1]   // we went one char to long
+              | _ -> newName    // we are exactly where we want to be             
     | false -> failwith "lastChar not found in probability table"
 
 // Given a pre-built probability table generates a random name.
@@ -37,5 +40,5 @@ let generateRandomName (probabilityTable:ProbabilityTable) : string =
     // spaces in our probability table. These are the letters that start name. 
     // We must remember to take this whitespace into account in our nameLength and later when 
     // returning the name
-    let lowerCaseName = buildName " " (nameLength + 1) probabilityTable
+    let lowerCaseName = buildName " " nameLength probabilityTable
     lowerCaseName.[1].ToString().ToUpper() + lowerCaseName.[2..]

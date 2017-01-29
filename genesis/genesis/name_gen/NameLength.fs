@@ -1,5 +1,6 @@
 module NameLength
 
+open System
 open MathNet.Numerics.Distributions
 
 // A record type that contains the mean and standard deviation of the names world length from an 
@@ -13,13 +14,15 @@ let getNameLengthInfo (input:string) : NameLengthInfo =
     let numberOfNames = float names.Length
     let namesLengths = names |> Array.map (fun name -> float name.Length)
     let mean = namesLengths |> Array.average        
-    let standardDeviation = sqrt (namesLengths |> Array.map (fun x -> (x - mean)**2.0) |> Array.average)
+    let standardDeviation = sqrt (namesLengths 
+                                  |> Array.map (fun x -> (x - mean)**2.0) 
+                                  |> Array.average)
     
-    { mean = mean; standardDeviation = standardDeviation}
+    { mean = mean; standardDeviation = standardDeviation }
 
 // Given a NameLengthInfo returns a random value drawn from a normal (gaussian) distribution
-let getNameLength (nameLengthInfo:NameLengthInfo) =        
+let getNameLength (nameLengthInfo:NameLengthInfo) : int =        
     let mean = nameLengthInfo.mean
     let standardDeviation = nameLengthInfo.standardDeviation
     let normalDistribution = new Normal(mean, standardDeviation)
-    normalDistribution.Sample()
+    normalDistribution.Sample() |> Math.Round |> int

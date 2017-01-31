@@ -22,16 +22,19 @@ let pickString (values:Map<string, float>) : string =
 let rec buildName (nameSoFar:string) (charLeft:int) (probabilityTable:ProbabilityTable) : string =
     let lastChar = nameSoFar.[nameSoFar.Length - 1].ToString() 
 
-    match probabilityTable.probabilities.ContainsKey(lastChar) with
-    | true -> let addition = pickString probabilityTable.probabilities.[lastChar]
-              let newName = nameSoFar + addition
-              let newCharLeft = charLeft - addition.Length
-              
-              match newCharLeft with
-              | ln when ln > 0 -> buildName newName newCharLeft probabilityTable // we need more
-              | ln when ln < 0 -> newName.[0..newName.Length - 1]   // we went one char to long
-              | _ -> newName    // we are exactly where we want to be             
-    | false -> failwith "lastChar not found in probability table"
+    let addition = match probabilityTable.probabilities.ContainsKey(lastChar) with
+                   // if our character exists pick one of it's subkeys
+                   | true -> pickString probabilityTable.probabilities.[lastChar]              
+                   // otherwise start a new sequence of character with a name starting character
+                   | false -> pickString probabilityTable.probabilities.[" "]   
+
+    let newName = nameSoFar + addition
+    let newCharLeft = charLeft - addition.Length
+    
+    match newCharLeft with
+    | ln when ln > 0 -> buildName newName newCharLeft probabilityTable // we need more
+    | ln when ln < 0 -> newName.[0..newName.Length - 1]   // we went one char to long
+    | _ -> newName    // we are exactly where we want to be             
 
 // Given a pre-built probability table generates a random name.
 let generateRandomName (probabilityTable:ProbabilityTable) : string = 

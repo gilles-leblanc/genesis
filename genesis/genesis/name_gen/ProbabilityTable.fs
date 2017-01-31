@@ -37,7 +37,7 @@ let addProbability (key:string) value (probabilityTable:Map<string, Map<string, 
     | _ -> match probabilityTable.ContainsKey(mainKey) with
            | true -> let subMap = Map.find mainKey probabilityTable
                      match subMap.ContainsKey(subKey) with
-                     | true -> failwith "subkey already added in probabilityTable"
+                     | true -> failwithf "subkey %s already added in probabilityTable" subKey
                      | false -> let newSubMap = subMap.Add(subKey, value)
                                 probabilityTable.Add(mainKey, newSubMap)
            | false -> let subMap = Map.empty.Add(subKey, value)

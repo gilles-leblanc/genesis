@@ -119,5 +119,11 @@ let nameGenTests =
         fun() ->
             let probabilities = buildProbabilityTable " James John Max Gary Jess Gilles Mary " 2
             let restOfName = (generateRandomName probabilities).[1..]
-            assertIsTrue (Seq.forall Char.IsLower restOfName)            
-    ]        
+            assertIsTrue (Seq.forall Char.IsLower restOfName)     
+
+        "Names will be at least 3 characters long",
+        fun() -> 
+            let probabilities = buildProbabilityTable " Aa Ab Ac Ba Bb Bc Ca " 2
+            let name = generateRandomName probabilities
+            assertIsGreaterThan 2 3
+        ]        

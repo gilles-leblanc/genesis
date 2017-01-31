@@ -20,7 +20,7 @@ let assertAreEqual expected actual =
         
 let assertIsGreaterThan target actual =
      match target >= actual with
-     | true -> sprintf "[ Test failed, expected %A to be greater than %A ]" target actual
+     | true -> sprintf "[ Test failed, expected %A to be greater than %A ]" actual target
      | false -> passed 
         
 // test runner

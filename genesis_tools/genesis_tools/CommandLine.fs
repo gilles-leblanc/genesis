@@ -2,9 +2,7 @@ module CommandLine
 
 type ToolsOption = MapGenerator | NameGenerator | NoOptions
 
-type CommandLineOptions = {
-    tool: ToolsOption
-    }
+type CommandLineOptions = { tool: ToolsOption }
 
 let parseCommandLine args = 
     match args with 

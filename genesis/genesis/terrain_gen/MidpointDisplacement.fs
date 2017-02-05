@@ -10,7 +10,16 @@ let initCorners (hm:HeightMap) (rnd:System.Random) =
     hm.Set 0 (size - 1) (rnd.NextDouble())
     hm.Set (size - 1) 0 (rnd.NextDouble())
     hm.Set (size - 1) (size - 1) (rnd.NextDouble())
-    
+
+// set the center value of the current matrix to the average of all middle values + variation function
+let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
+    // average height of left and right middle points
+    let avgHorizontal = avg (hm.Get x1 (avg y1 y3)) (hm.Get x2 (avg y2 y4))
+    let avgVertical = avg (hm.Get (avg x1 x2) y1) (hm.Get (avg x3 x4) y3)
+           
+    // set center value
+    hm.Set (avg x1 x4) (avg y1 y4) (avg avgHorizontal avgVertical |> variation) 
+
 // set the middle values between each corner (c1 c2 c3 c4)
 // variation is a function that is applied on each pixel to modify it's value
 let middle (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =   
@@ -29,15 +38,6 @@ let middle (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
     // set lower middle
     if hm.Get (avg x3 x4) y3 = 0.0 then
         hm.Set (avg x3 x4) y3 (avg (hm.Get x3 y3) (hm.Get x4 y4) |> variation)           
-
-// set the center value of the current matrix to the average of all middle values + variation function
-let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
-    // average height of left and right middle points
-    let avgHorizontal = avg (hm.Get x1 (avg y1 y3)) (hm.Get x2 (avg y2 y4))
-    let avgVertical = avg (hm.Get (avg x1 x2) y1) (hm.Get (avg x3 x4) y3)
-           
-    // set center value
-    hm.Set (avg x1 x4) (avg y1 y4) (avg avgHorizontal avgVertical |> variation) 
 
 let rec displace (hm) (x1, y1) (x4, y4) (rnd) (spread) (spreadReduction) =
     let ulCorner = (x1, y1) 
@@ -60,7 +60,7 @@ let rec displace (hm) (x1, y1) (x4, y4) (rnd) (spread) (spreadReduction) =
         displace hm (x1, yAvg) (xAvg, y4) rnd adjustedSpread spreadReduction
         displace hm (xAvg, yAvg) (x4, y4) rnd adjustedSpread spreadReduction
     
-let generate hm startingSpread spreadReduction =
+let midpointDisplacement hm startingSpread spreadReduction =
     let rnd = System.Random()
     let size = hm.Size - 1    
     

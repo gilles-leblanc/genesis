@@ -9,10 +9,12 @@ open ProbabilityTable
 open NameGenerator
 open HeightMap  
 open MidpointDisplacement
+open ValueNoise
 
 let generateMap () =
-    let map = newHeightMap 8
-    generate map 0.3 0.5
+    // let map = newHeightMap 10
+    // midpointDisplacement map 0.3 0.5
+    let map = generateNoise 600 256.0
     heightMapToPng map "out.png"
     heightMapToTxt map "out.txt"  
 

@@ -1,0 +1,48 @@
+module ValueNoise
+
+open HeightMap
+
+// use bilinear interpolation to smooth out the noise values
+ let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float = 
+    let x' = float x / zoomLevel
+    let y' = float y / zoomLevel
+    
+    let fractX = x' % 1.0
+    let fractY = y' % 1.0
+
+    let x1 = (int x' + origMap.Size) % origMap.Size
+    let y1 = (int y' + origMap.Size) % origMap.Size
+
+    let x2 = (x1 + origMap.Size - 1) % origMap.Size
+    let y2 = (y1 + origMap.Size - 1) % origMap.Size
+
+    (fractX * fractY * origMap.Get y1 x1) 
+    + ((1.0 - fractX) * fractY * origMap.Get y1 x2) 
+    + (fractX * (1.0 - fractY) * origMap.Get y2 x1) 
+    + ((1.0 - fractX) * (1.0 - fractY) * origMap.Get y2 x2)
+
+let rec turbulence heightMap x y zoom values =
+    match zoom with
+    | z when z >= 2.0 -> let newValues = bilinearInterpolation heightMap x y z :: values
+                         turbulence heightMap x y (zoom / 2.0) newValues
+    | _ -> values
+
+// generate a new heigthMap of size * size, using Value Noise method
+let generateNoise size zoomLevel : HeightMap =
+    let rnd = System.Random()
+
+    let map = 
+        Array.zeroCreate (size * size) 
+        |> Array.map (fun x -> rnd.NextDouble()) 
+        |> newHeightMap' size 
+
+    let zoomed = 
+        Array.zeroCreate (size * size) 
+        |> newHeightMap' size  
+
+    [0..size - 1] |> List.iter (fun i -> 
+        [0.. size - 1] |> List.iter (fun j -> zoomed.Set i j (turbulence map i j zoomLevel [1.0] 
+                                                              |> List.average)))
+    
+    zoomed
+

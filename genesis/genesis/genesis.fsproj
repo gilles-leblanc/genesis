@@ -46,8 +46,9 @@
     <Compile Include="name_gen/NameGenerator.fs" />
     <Compile Include="terrain_gen/HeightMap.fs" />
     <Compile Include="terrain_gen/MidpointDisplacement.fs" />
+    <Compile Include="terrain_gen/ValueNoise.fs" />
     <Compile Include="genesis.fs" />
-    <None Include="Script.fsx" />    
+    <None Include="Script.fsx" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Choose>

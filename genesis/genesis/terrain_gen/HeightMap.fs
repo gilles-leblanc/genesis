@@ -4,16 +4,18 @@ module HeightMap
 // different generation algorithms
 
 type HeightMap = {Size:int; Map:float array} with     
-    member this.Get x y =
-        this.Map.[x * this.Size + y]      
+    member this.Get x y = this.Map.[x * this.Size + y]      
         
-    member this.Set x y value =
-        this.Map.[x * this.Size + y] <- value
+    member this.Set x y value = this.Map.[x * this.Size + y] <- value
 
-// returns a square matrix of size 2^n + 1
+// returns a square matrix of size 2^n + 1 HeightMap object
 let newHeightMap n : HeightMap =
     let size = ( pown 2 n ) + 1
     {Size = size; Map = Array.zeroCreate (size * size)}  
+
+// returns an HeightMap object initialized with the given parameters
+let newHeightMap' n array : HeightMap =
+    {Size = n; Map = array}  
 
 // normalize a single value to constrain it's value between 0.0 and 1.0
 let normalizeValue v =

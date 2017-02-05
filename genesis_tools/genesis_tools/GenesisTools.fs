@@ -14,7 +14,7 @@ open ValueNoise
 let generateMap () =
     // let map = newHeightMap 10
     // midpointDisplacement map 0.3 0.5
-    let map = generateNoise 600 256.0
+    let map = generateNoise 1024 256.0
     heightMapToPng map "out.png"
     heightMapToTxt map "out.txt"  
 

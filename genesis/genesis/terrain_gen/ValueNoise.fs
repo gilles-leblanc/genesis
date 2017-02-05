@@ -21,11 +21,19 @@ open HeightMap
     + (fractX * (1.0 - fractY) * origMap.Get y2 x1) 
     + ((1.0 - fractX) * (1.0 - fractY) * origMap.Get y2 x2)
 
-let rec turbulence heightMap x y zoom values =
+// The turbulence function creates many octaves, or values with different zoom levels.
+// Each octave brightness decreases has it's zoom decreases to reduce it's effect on the whole.
+// The values are meant to be average into a single value.
+let rec turbulence heightMap x y zoom brightnessLevel values =
+    let newBrightness = match brightnessLevel with                       
+                        | b when b - 0.25 > 0.05 -> b - 0.25        // reduce brightness
+                        | _ -> 0.05                                 // do not reduce past this point
+    
     match zoom with
-    | z when z >= 2.0 -> let newValues = bilinearInterpolation heightMap x y z :: values
-                         turbulence heightMap x y (zoom / 2.0) newValues
-    | _ -> values
+    | z when z >= 2.0 -> let newValue = (bilinearInterpolation heightMap x y z) * brightnessLevel
+                         turbulence heightMap x y (zoom / 2.0) newBrightness (newValue :: values)
+    // do the interpolation one more time at a factor of 1.0
+    | _ -> (bilinearInterpolation heightMap x y 1.0) * 0.025 :: values
 
 // generate a new heigthMap of size * size, using Value Noise method
 let generateNoise size zoomLevel : HeightMap =
@@ -41,7 +49,7 @@ let generateNoise size zoomLevel : HeightMap =
         |> newHeightMap' size  
 
     [0..size - 1] |> List.iter (fun i -> 
-        [0.. size - 1] |> List.iter (fun j -> zoomed.Set i j (turbulence map i j zoomLevel [1.0] 
+        [0.. size - 1] |> List.iter (fun j -> zoomed.Set i j (turbulence map i j zoomLevel 1.0 List.empty 
                                                               |> List.average)))
     
     zoomed

@@ -29,7 +29,7 @@ let rec countOccurrences (input:string) (occurrenceTable:Map<string, float>) len
 // Return a new probability table with the key value pair added.
 // Given letter X, a probability table gives a percentage for letter Y to appear following letter X.
 let addProbability (key:string) value (probabilityTable:Map<string, Map<string, float>>) length =
-    let mainKey = key.[0].ToString() 
+    let mainKey = Char.ToString key.[0]
     let subKey = key.[1..] 
 
     match Seq.forall Char.IsLower subKey with 
@@ -64,7 +64,7 @@ let cumulate map =
 // Given an input string creates a probability table for the different letters in the string.
 let buildProbabilityTable (input:string) length : ProbabilityTable =  
     let nameLengths = getNameLengthInfo input
-
+    
     let occurrencesTable = countOccurrences (input.ToLower()) Map.empty length 
     let adjLen = length - 1
 

@@ -10,11 +10,13 @@ open HeightMap
     let fractX = x' % 1.0
     let fractY = y' % 1.0
 
-    let x1 = (int x' + origMap.Size) % origMap.Size
-    let y1 = (int y' + origMap.Size) % origMap.Size
+    let mapSize = origMap.Size
 
-    let x2 = (x1 + origMap.Size - 1) % origMap.Size
-    let y2 = (y1 + origMap.Size - 1) % origMap.Size
+    let x1 = (int x' + mapSize) % mapSize
+    let y1 = (int y' + mapSize) % mapSize
+
+    let x2 = (x1 + mapSize - 1) % mapSize
+    let y2 = (y1 + mapSize - 1) % mapSize
 
     (fractX * fractY * origMap.Get y1 x1) 
     + ((1.0 - fractX) * fractY * origMap.Get y1 x2) 

@@ -28,14 +28,16 @@ let terrainGenTests =
             initCorners hm (System.Random())
             let size = hm.Size - 1
             let corners = [hm.Get 0 0; hm.Get 0 size; hm.Get size 0; hm.Get size size]
-            let result = List.reduce (fun acc elem -> acc + elem) corners 
+            let result = List.reduce (( + )) corners 
             assertIsGreaterThan 0.0 result;
             
         "normalize will constrain all values between 0.0 and 1.0",
         fun() ->
-            let matrix = [| 2.0; 0.5; 1.0; -1.0; 0.0; 34.0; 23.0; 0.0; 0.0; -3.5; 0.0; 0.4; 0.3; 0.2; 1.1; -0.1; -0.2; -10.0; 10.0; 1.0; 0.2; 0.03; 0.004; 1.001; 0.8539 |]
+            let matrix = [| 2.0; 0.5; 1.0; -1.0; 0.0; 34.0; 23.0; 0.0; 0.0; -3.5; 0.0; 0.4; 0.3;
+                            0.2; 1.1; -0.1; -0.2; -10.0; 10.0; 1.0; 0.2; 0.03; 0.004; 1.001; 0.8539 |]
             let normalized = matrix |> Array.map normalizeValue 
-            assertAreEqual [| 1.0; 0.5; 1.0; 0.0; 0.0; 1.0; 1.0; 0.0; 0.0; 0.0; 0.0; 0.4; 0.3; 0.2; 1.0; 0.0; 0.0; 0.0; 1.0; 1.0; 0.2; 0.03; 0.004; 1.0; 0.8539 |] normalized;
+            assertAreEqual [| 1.0; 0.5; 1.0; 0.0; 0.0; 1.0; 1.0; 0.0; 0.0; 0.0; 0.0; 0.4; 0.3; 0.2; 
+                              1.0; 0.0; 0.0; 0.0; 1.0; 1.0; 0.2; 0.03; 0.004; 1.0; 0.8539 |] normalized;
             
         "convertFloatToRgb will convert 0.0 to r:0, g:0, b:0",
         fun() ->

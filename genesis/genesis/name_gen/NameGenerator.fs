@@ -20,9 +20,9 @@ let pickString (values:Map<string, float>) : string =
 
 // Recursively creates a new name.
 let rec buildName (nameSoFar:string) (charLeft:int) (probabilityTable:ProbabilityTable) : string =
-    let lastChar = nameSoFar.[nameSoFar.Length - 1].ToString() 
+    let lastChar = Char.ToString nameSoFar.[nameSoFar.Length - 1]
 
-    let addition = match probabilityTable.probabilities.ContainsKey(lastChar) with
+    let addition = match Map.containsKey lastChar probabilityTable.probabilities with
                    // if our character exists pick one of it's subkeys
                    | true -> pickString probabilityTable.probabilities.[lastChar]              
                    // otherwise start a new sequence of character with a name starting character
@@ -44,4 +44,4 @@ let generateRandomName (probabilityTable:ProbabilityTable) : string =
     // We must remember to take this whitespace into account in our nameLength and later when 
     // returning the name
     let lowerCaseName = buildName " " nameLength probabilityTable
-    lowerCaseName.[1].ToString().ToUpper() + lowerCaseName.[2..]
+    (Char.ToUpper lowerCaseName.[1] |> Char.ToString) + lowerCaseName.[2..]

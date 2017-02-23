@@ -1,8 +1,10 @@
 module ProbabilityTable
 
 open System
-open System.Collections.Generic   
+open System.IO
+open Newtonsoft.Json  
 
+open MapConverter
 open NameLength
 
 type ProbabilityTable = { probabilities:Map<string, Map<string, float>>; 
@@ -75,6 +77,16 @@ let buildProbabilityTable (input:string) length : ProbabilityTable =
     { probabilities = table; nameLengthInfo = nameLengths }
 
 // Given an input file path, creates a probability table calling buildProbabilityTable
-let buildProbabilityTableFromFile (filePath:string) length : ProbabilityTable = 
-    let input = System.IO.File.ReadAllText(filePath)
+let buildProbabilityTableFromMediaFile (filePath:string) length : ProbabilityTable = 
+    let input = File.ReadAllText(filePath)
     buildProbabilityTable input length
+
+// Given an input file path for an already built serialized probabilityTable, return this table
+let buildProbabilityTableFromSerializationFile (filePath:string) length : ProbabilityTable = 
+    let json = File.ReadAllText(filePath)
+    JsonConvert.DeserializeObject<ProbabilityTable>(json, mapConverter)
+
+// Serialize a ProbabilityTable to file
+let serializeProbabilityTable (filePath:string) (table:ProbabilityTable) =
+    let json = JsonConvert.SerializeObject table
+    File.WriteAllText(filePath, json)

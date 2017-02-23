@@ -3,7 +3,7 @@ module ValueNoise
 open HeightMap
 
 // use bilinear interpolation to smooth out the noise values
- let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float = 
+let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float = 
     let x' = float x / zoomLevel
     let y' = float y / zoomLevel
     

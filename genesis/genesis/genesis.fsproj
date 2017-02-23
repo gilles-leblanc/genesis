@@ -34,14 +34,16 @@
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
-    </Reference>
+    </Reference>    
     <Reference Include="MathNet.Numerics" />
+    <Reference Include="Newtonsoft.Json" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="name_gen/NameLength.fs" />
+    <Compile Include="name_gen/MapConverter.fs" />
     <Compile Include="name_gen/ProbabilityTable.fs" />
     <Compile Include="name_gen/NameGenerator.fs" />
     <Compile Include="terrain_gen/HeightMap.fs" />

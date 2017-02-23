@@ -19,10 +19,13 @@ let generateMap () =
     heightMapToTxt map "out.txt"  
 
 let generateName () = 
-    let table = buildProbabilityTableFromFile "media/greek_myth_sample" 3
-    let json = JsonConvert.SerializeObject(table)    
+    let table = buildProbabilityTableFromMediaFile "media/greek_myth_sample" 3
+    serializeProbabilityTable "media/greek_myth_serialized" table
+
+    let deserializedTable = buildProbabilityTableFromSerializationFile "media/greek_myth_serialized" 3 
+    // let json = JsonConvert.SerializeObject table
     // printfn "%s" json
-    printfn "%s" (generateRandomName table)
+    printfn "%s" (generateRandomName deserializedTable)
 
 [<EntryPoint>]
 let main argv =

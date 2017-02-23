@@ -1,7 +1,5 @@
 module GenesisTools
 
-open Newtonsoft.Json
-
 open CommandLine
 open MapTools
 
@@ -19,12 +17,10 @@ let generateMap () =
     heightMapToTxt map "out.txt"  
 
 let generateName () = 
-    let table = buildProbabilityTableFromMediaFile "media/greek_myth_sample" 3
-    serializeProbabilityTable "media/greek_myth_serialized" table
+    let table = buildProbabilityTableFromMediaFile "media/tolkien_sample" 4
+    serializeProbabilityTable "media/tolkien_serialized" table
 
-    let deserializedTable = buildProbabilityTableFromSerializationFile "media/greek_myth_serialized" 3 
-    // let json = JsonConvert.SerializeObject table
-    // printfn "%s" json
+    let deserializedTable = buildProbabilityTableFromSerializationFile "media/tolkien_serialized" 4
     printfn "%s" (generateRandomName deserializedTable)
 
 [<EntryPoint>]

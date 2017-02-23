@@ -14,9 +14,7 @@ let getNameLengthInfo (input:string) : NameLengthInfo =
     let numberOfNames = float names.Length
     let namesLengths = names |> Array.map (fun name -> float name.Length)
     let mean = namesLengths |> Array.average        
-    let standardDeviation = sqrt (namesLengths 
-                                  |> Array.map (fun x -> (x - mean)**2.0) 
-                                  |> Array.average)
+    let standardDeviation = sqrt (Array.averageBy (fun x -> (x - mean)**2.0) namesLengths)
     
     { mean = mean; standardDeviation = standardDeviation }
 

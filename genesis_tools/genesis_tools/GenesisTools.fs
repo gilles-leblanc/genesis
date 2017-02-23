@@ -23,6 +23,10 @@ let generateName () =
     let deserializedTable = buildProbabilityTableFromSerializationFile "media/tolkien_serialized" 4
     printfn "%s" (generateRandomName deserializedTable)
 
+let serializeName () =
+    let table = buildProbabilityTableFromMediaFile "media/tolkien_sample" 4
+    serializeProbabilityTable "media/tolkien_serialized" table
+
 [<EntryPoint>]
 let main argv =
     let toolOption = parseCommandLine (argv |> Array.toList)
@@ -30,6 +34,7 @@ let main argv =
     match toolOption.tool with
     | MapGenerator -> generateMap () |> ignore
     | NameGenerator -> generateName () |> ignore
+    | NameSerializer -> serializeName () |> ignore
     | NoOptions -> ()
 
     0 

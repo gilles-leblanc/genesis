@@ -1,16 +1,15 @@
 module CommandLine
 
-type ToolsOption = MapGenerator | NameGenerator | NoOptions
+type ToolsOption = MapGenerator | NameGenerator | NameSerializer | NoOptions
 
 type CommandLineOptions = { tool: ToolsOption }
 
 let parseCommandLine args = 
     match args with 
-    | [] -> 
-        printfn "No option specified"
-        { tool = NoOptions }
+    | [] -> printfn "No option specified"
+            { tool = NoOptions }
     | "/map"::xs -> { tool = MapGenerator }
     | "/name"::xs -> { tool = NameGenerator }    
-    | x::xs ->  
-        printfn "Option '%s' is unrecognized" x
-        { tool = NoOptions }
+    | "/serialize"::xs -> { tool = NameSerializer }
+    | x::xs -> printfn "Option '%s' is unrecognized" x
+               { tool = NoOptions }

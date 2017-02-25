@@ -5,11 +5,11 @@ open System.Drawing
 open HeightMap  
 open MidpointDisplacement
 
-let heightMapToTxt (heightMap:HeightMap) (filename:string) =
+let heightMapToTxt (filename:string) (heightMap:HeightMap) =
     let out = Array.init (heightMap.Size * heightMap.Size) (fun e -> heightMap.Map.[e].ToString())
     System.IO.File.WriteAllLines(filename, out)
 
-let heightMapToPng (heightMap:HeightMap) (filename:string) =
+let heightMapToPng (filename:string) (heightMap:HeightMap) =
     let png = new Bitmap(heightMap.Size, heightMap.Size)
     for x in [0..heightMap.Size-1] do
         for y in [0..heightMap.Size-1] do

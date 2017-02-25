@@ -22,7 +22,7 @@ let getNameLengthInfo (input:string) : NameLengthInfo =
 let getNameLength (nameLengthInfo:NameLengthInfo) : int =        
     let mean = nameLengthInfo.mean
     let standardDeviation = nameLengthInfo.standardDeviation
-    let normalDistribution = new Normal(mean, standardDeviation)
+    let normalDistribution = Normal(mean, standardDeviation)
     let length = normalDistribution.Sample() |> Math.Round |> int
 
     if length > 2 then length else 3

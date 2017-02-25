@@ -5,8 +5,8 @@ open System.Collections.Generic
 open Newtonsoft.Json  
 
 // http://stackoverflow.com/a/30836070/153797
-type mapConvert<'f,'t when 'f : comparison>() =
-    static member readJson (reader:JsonReader, serializer:JsonSerializer) =
+type MapConvert<'f,'t when 'f : comparison>() =
+    static member ReadJson (reader:JsonReader, serializer:JsonSerializer) =
         serializer.Deserialize<Dictionary<'f, 't>> (reader)
         |> Seq.map (fun kv -> kv.Key, kv.Value)
         |> Map.ofSeq
@@ -21,7 +21,7 @@ let mapConverter = {
 
     override __.ReadJson (reader, t, _, serializer) =
       let converter = 
-        typedefof<mapConvert<_,_>>.MakeGenericType (t.GetGenericArguments())
+        typedefof<MapConvert<_,_>>.MakeGenericType (t.GetGenericArguments())
 
       let readJson =
         converter.GetMethod("readJson")

@@ -39,6 +39,7 @@
     <Reference Include="Newtonsoft.Json" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +50,7 @@
     <Compile Include="terrain_gen/HeightMap.fs" />
     <Compile Include="terrain_gen/MidpointDisplacement.fs" />
     <Compile Include="terrain_gen/ValueNoise.fs" />
+    <Compile Include="terrain_gen/Terrain.fs" />
     <Compile Include="genesis.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>

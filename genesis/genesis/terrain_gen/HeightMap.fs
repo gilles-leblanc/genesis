@@ -24,10 +24,14 @@ let normalizeValue v =
     | v when v > 1.0 -> 1.0
     | _ -> v
 
-// converts a float point ranging from 0.0 to 1.0 to a rgb value
+// converts a floating point ranging from 0.0 to 1.0 to an int value ranging from 0 to 255
+let convertFloatToInt (pct:float) : int =
+    int (255.0 * pct)
+
+// converts a floating point ranging from 0.0 to 1.0 to a rgb value
 // 0.0 represents black and 1.0 white. The conversion is in greyscale 
 let convertFloatToRgb (pct:float) : int * int * int =
-    let greyscale = int (255.0 * pct)
+    let greyscale = convertFloatToInt pct
     (greyscale, greyscale, greyscale)
     
 // returns the average between two values    

@@ -34,33 +34,34 @@ let gradientColors p =
         value >= start && value <= ``end``        
 
     let pct value range =
-        (value - range.Start) / 100
-
-    let mix low high pct = 
-        low + (high - low) * pct
+        float (value - range.Start) / 100.0
 
     let gradient pct range =
+        let mix low high pct =
+            let fLow = float low
+            let fHigh = float high
+            fLow + ((fHigh - fLow) * pct)
+
         let { LowColor=lowColor; HighColor=highColor } = range
         let lr, lg, lb = lowColor
         let hr, hg, hb = highColor
         // changing to tuple, if successful rebase with previous commit
-        (mix lr hr pct), (mix lg hg pct), (mix lb hb pct)
+        (mix lr hr pct |> int), (mix lg hg pct |> int), (mix lb hb pct |> int)
 
     match convertFloatToInt p with
     | x when inRange x blueRange -> gradient (pct x blueRange) blueRange
     | x when inRange x brownRange -> gradient (pct x brownRange) brownRange
     | x when inRange x greyRange -> gradient (pct x greyRange) greyRange
     | x -> failwith "invalid gradientColors operation"
-let makeTerrain (heightMap:HeightMap) = 
+    
+let makeTerrain colorFunction (heightMap:HeightMap) = 
     // convert 1 float value to rgb
     // apply filters during conversion
-    let pixelData = heightMap.Map |> Array.map solidColors
-
     let png = new Bitmap(heightMap.Size, heightMap.Size)
     
     for x in [0..heightMap.Size-1] do
         for y in [0..heightMap.Size-1] do
-            let red, green, blue = solidColors (heightMap.Get x y) 
+            let red, green, blue = colorFunction (heightMap.Get x y) 
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
     
     png.Save("terrain.png", Imaging.ImageFormat.Png) |> ignore

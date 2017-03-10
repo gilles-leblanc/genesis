@@ -28,7 +28,7 @@ let serializeName length inFileName outFileName =
     serializeProbabilityTable outFileName table
 
 let generateTerrain () =
-    generateMap MidpointDisplacement |> makeTerrain
+    generateMap MidpointDisplacement |> makeTerrain gradientColors
 
 [<EntryPoint>]
 let main argv =

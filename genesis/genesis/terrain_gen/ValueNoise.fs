@@ -2,6 +2,10 @@ module ValueNoise
 
 open HeightMap
 
+let dimming = 0.25
+let minLight = 0.05
+let lightBoost = 1.2
+
 // use bilinear interpolation to smooth out the noise values
 let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float = 
     let x' = float x / zoomLevel
@@ -26,10 +30,10 @@ let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float =
 // The turbulence function creates many octaves, or values with different zoom levels.
 // Each octave brightness decreases has it's zoom decreases to reduce it's effect on the whole.
 // The values are meant to be average into a single value.
-let rec turbulence heightMap x y zoom brightnessLevel values =
+let rec turbulence heightMap x y zoom brightnessLevel values =    
     let newBrightness = match brightnessLevel with                       
-                        | b when b - 0.25 > 0.05 -> b - 0.25        // reduce brightness
-                        | _ -> 0.05                                 // do not reduce past this point
+                        | b when b - dimming > minLight -> b - dimming  // reduce brightness
+                        | _ -> minLight                                 // do not reduce past this point
     
     match zoom with
     | z when z >= 2.0 -> let newValue = (bilinearInterpolation heightMap x y z) * brightnessLevel
@@ -40,6 +44,7 @@ let rec turbulence heightMap x y zoom brightnessLevel values =
 // generate a new heigthMap of size * size, using Value Noise method
 let generateNoise size zoomLevel : HeightMap =
     let rnd = System.Random()
+    let boost x = x * lightBoost
 
     let map = 
         Array.zeroCreate (size * size) 
@@ -52,7 +57,7 @@ let generateNoise size zoomLevel : HeightMap =
 
     [0..size - 1] |> List.iter (fun i -> 
         [0.. size - 1] |> List.iter (fun j -> zoomed.Set i j (turbulence map i j zoomLevel 1.0 List.empty 
-                                                              |> List.average)))
+                                                              |> List.average |> boost)))
     
     zoomed
 

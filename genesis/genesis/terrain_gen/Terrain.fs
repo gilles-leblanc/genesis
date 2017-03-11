@@ -8,27 +8,20 @@ open HeightMap
 type Image = { Size:int; Pixels:int * int * int array }
 type Range = { Start:int; End:int; LowColor:int * int * int; HighColor:int * int * int }
 
+let blueRange = { Start=0; End=74; LowColor=10, 10, 100; HighColor=10, 10, 200 }    
+let brownRange = { Start=75; End=174; LowColor=122, 104, 33; HighColor=244, 209, 66 }
+let greyRange = { Start=175; End=255; LowColor=69, 69, 69; HighColor=129, 129, 129 }
+
 // convert a heightmap value to rgb solid colors values
 let solidColors p =
-    let solidBlue = 10, 10, 200
-    let solidBrown = 244, 209, 66
-    let solidGrey = 119, 119, 119
-
     match convertFloatToInt p with
-    | x when x < 75 -> solidBlue
-    | x when x >= 75 && x < 175 -> solidBrown
-    | x when x >= 175 -> solidGrey
+    | x when x < 75 -> blueRange.HighColor
+    | x when x >= 75 && x < 175 -> brownRange.HighColor
+    | x when x >= 175 -> greyRange.HighColor
     | x -> failwith "invalid solidColors operation"
 
 // convert a heightmap value to rgb gradient colors values
 let gradientColors p =
-    let blueRange = { Start=0; End=74; LowColor=10, 10, 100; 
-                                       HighColor=10, 10, 200 }    
-    let brownRange = { Start=75; End=174; LowColor=122, 104, 33; 
-                                          HighColor=244, 209, 66 }
-    let greyRange = { Start=175; End=255; LowColor=69, 69, 69; 
-                                          HighColor=129, 129, 129 }
-
     let inRange value range = 
         let { Start=start; End=``end`` } = range
         value >= start && value <= ``end``        

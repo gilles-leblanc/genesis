@@ -17,7 +17,7 @@ let generateMap option =
         midpointDisplacement map 0.3 0.5 
         map
     | ValueNoise ->
-        generateNoise 1024 256.0
+        generateNoise 1024 156.0
 
 let generateName length fileName = 
     let table = buildProbabilityTableFromMediaFile fileName length
@@ -28,7 +28,9 @@ let serializeName length inFileName outFileName =
     serializeProbabilityTable outFileName table
 
 let generateTerrain () =
-    generateMap MidpointDisplacement |> makeTerrain gradientColors
+    let map = generateMap MidpointDisplacement
+    map |> heightMapToPng "out.png"
+    map |> makeTerrain solidColors
 
 [<EntryPoint>]
 let main argv =

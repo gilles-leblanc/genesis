@@ -29,8 +29,9 @@ let serializeName length inFileName outFileName =
 
 let generateTerrain () =
     let map = generateMap MidpointDisplacement
+    let rainMap = generateMap MidpointDisplacement
     map |> heightMapToPng "out.png"
-    map |> makeTerrain solidColors
+    makeTerrain gradientColors map rainMap
 
 [<EntryPoint>]
 let main argv =

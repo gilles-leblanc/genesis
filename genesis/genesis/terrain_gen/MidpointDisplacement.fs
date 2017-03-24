@@ -1,6 +1,10 @@
 module MidpointDisplacement
 
+open System.Configuration
 open HeightMap
+
+let startingSpread = ConfigurationManager.AppSettings.Item("startingSpread") |> float
+let spreadReduction = ConfigurationManager.AppSettings.Item("spreadReduction") |> float
 
 // set the four corners to random values
 let initCorners (hm:HeightMap) (rnd:System.Random) =
@@ -39,7 +43,7 @@ let middle (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
     if hm.Get (avg x3 x4) y3 = 0.0 then
         hm.Set (avg x3 x4) y3 (avg (hm.Get x3 y3) (hm.Get x4 y4) |> variation)           
     
-let midpointDisplacement hm startingSpread spreadReduction =
+let midpointDisplacement hm =
     let rec displace (hm) (x1, y1) (x4, y4) (rnd) (spread) (spreadReduction) =
         let ulCorner = (x1, y1) 
         let urCorner = (x4, y1)

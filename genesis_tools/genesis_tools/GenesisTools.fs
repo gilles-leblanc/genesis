@@ -14,7 +14,7 @@ let generateMap option =
     match option with
     | MidpointDisplacement ->         
         let map = newHeightMap 10
-        midpointDisplacement map 0.3 0.5 
+        midpointDisplacement map 
         map
     | ValueNoise ->
         generateNoise 1024 156.0

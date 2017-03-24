@@ -1,6 +1,7 @@
 module NameLength
 
 open System
+open System.Configuration
 open MathNet.Numerics.Distributions
 
 // A record type that contains the mean and standard deviation of the names world length from an 
@@ -25,4 +26,5 @@ let getNameLength (nameLengthInfo:NameLengthInfo) : int =
     let normalDistribution = Normal(mean, standardDeviation)
     let length = normalDistribution.Sample() |> Math.Round |> int
 
-    if length > 2 then length else 3
+    let minimumLength = ConfigurationManager.AppSettings.Item("minimumNameLength") |> int
+    if length >= (minimumLength) then length else minimumLength

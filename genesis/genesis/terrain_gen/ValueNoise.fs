@@ -1,10 +1,11 @@
 module ValueNoise
 
+open System.Configuration
 open HeightMap
 
-let dimming = 0.25
-let minLight = 0.05
-let lightBoost = 1.2
+let dimming = ConfigurationManager.AppSettings.Item("dimming") |> float
+let minLight = ConfigurationManager.AppSettings.Item("minLight") |> float
+let lightBoost = ConfigurationManager.AppSettings.Item("lightBoost") |> float
 
 // use bilinear interpolation to smooth out the noise values
 let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float = 

@@ -9,8 +9,8 @@ type Image = { Size:int; Pixels:int * int * int array }
 type Range = { Start:int; End:int; LowColor:int * int * int; HighColor:int * int * int }
 
 let blueRange = { Start=0; End=74; LowColor=10, 10, 100; HighColor=10, 10, 200 }    
-let brownRange = { Start=75; End=174; LowColor=122, 104, 33; HighColor=244, 209, 66 }
-let greyRange = { Start=175; End=255; LowColor=69, 69, 69; HighColor=129, 129, 129 }
+let brownRange = { Start=75; End=180; LowColor=122, 104, 33; HighColor=244, 209, 66 }
+let greyRange = { Start=181; End=255; LowColor=69, 69, 69; HighColor=129, 129, 129 }
 let greenRange = { Start=150; End=200; LowColor=19, 115, 58; HighColor=19, 200, 58 }
 
 // get wether a value is in a range

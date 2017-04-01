@@ -5,15 +5,34 @@ open HeightMap
 
 let startingSpread = ConfigurationManager.AppSettings.Item("startingSpread") |> float
 let spreadReduction = ConfigurationManager.AppSettings.Item("spreadReduction") |> float
+let landCornerInitValue = ConfigurationManager.AppSettings.Item("landCornerInitValue") |> float
+let seaCornerInitValue = ConfigurationManager.AppSettings.Item("seaCornerInitValue") |> float
 
 // set the four corners to random values
 let initCorners (hm:HeightMap) (rnd:System.Random) =
-    let size = hm.Size   
-    
-    hm.Set 0 0 (rnd.NextDouble())
-    hm.Set 0 (size - 1) (rnd.NextDouble())
-    hm.Set (size - 1) 0 (rnd.NextDouble())
-    hm.Set (size - 1) (size - 1) (rnd.NextDouble())
+    let size = hm.Size          
+   
+    // init a single corner value
+    let initCorner (hm:HeightMap) corner value =        
+        match corner with 
+        | 0 -> hm.Set 0 0 value
+        | 1 -> hm.Set 0 (size - 1) value
+        | 2 -> hm.Set (size - 1) 0 value
+        | 3 -> hm.Set (size - 1) (size - 1) value
+        | _ -> failwith "Invalid corner value"
+
+    // first init all corners with random values
+    [0..3] |> List.iter (fun c -> initCorner hm c (rnd.NextDouble())) 
+
+    // then we choose a random value to pick a corner which we will overwrite 
+    // to contain our first KeyValue
+    let firstCorner = rnd.Next(0, 3)
+    initCorner hm firstCorner landCornerInitValue
+
+    // next we choose the next corner to receive a predetermined value by selecting the corner,
+    // x places from this None
+    let secondCorner = (firstCorner + rnd.Next(1, 3)) % 4
+    initCorner hm secondCorner seaCornerInitValue   
 
 // set the center value of the current matrix to the average of all middle values + variation function
 let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
@@ -56,7 +75,7 @@ let midpointDisplacement hm =
         // the lambda passed in as a parameter is temporary until a define a better function
         middle hm ulCorner urCorner llCorner lrCorner variation 
         center hm ulCorner urCorner llCorner lrCorner variation
-        
+
         if x4 - x1 >= 2 then
             let xAvg = avg x1 x4
             let yAvg = avg y1 y4

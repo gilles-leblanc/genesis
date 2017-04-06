@@ -3,6 +3,7 @@ module Terrain
 open System.Drawing
 
 open HeightMap
+open Blur
 
 // type Pixel = { Red:int; Green:int; Blue:int }
 type Image = { Size:int; Pixels:int * int * int array }
@@ -53,10 +54,18 @@ let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) =
     // convert 1 float value to rgb
     // apply filters during conversion
     let png = new Bitmap(heightMap.Size, heightMap.Size)
-    
+    let png2 = new Bitmap(heightMap.Size, heightMap.Size)    
+
+    for x in [0..heightMap.Size-1] do
+        for y in [0..heightMap.Size-1] do
+            let red, green, blue = colorFunction (heightMap.Get x y) (rainMap.Get x y) 
+            png2.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
+
+    gaussianBlur heightMap
     for x in [0..heightMap.Size-1] do
         for y in [0..heightMap.Size-1] do
             let red, green, blue = colorFunction (heightMap.Get x y) (rainMap.Get x y) 
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
         
     png.Save("terrain.png", Imaging.ImageFormat.Png) |> ignore
+    png2.Save("unblurred.png", Imaging.ImageFormat.Png) |> ignore

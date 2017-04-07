@@ -17,19 +17,29 @@ let private filter x y (heightMap:HeightMap) (filter:Filter) fposx fposy =
 
     heightMap.Set x y filtered
 
+// Take a height map and blur it using the specified filter
+let blur (heightMap:HeightMap) (blurFilter:Filter) =
+    let size = heightMap.Size
 
-// Take a height map and blur it using a Gaussian blur
-let gaussianBlur (heightMap:HeightMap) =  
-     let gaussianFilter = { Positions = [-3..3]; 
-                            Kernel = [| 0.006; 0.061; 0.242; 0.383; 0.242; 0.061; 0.006 |]}
-     let size = heightMap.Size
-
-     // do the filter on one dimension
-     [2..size - 3] |> List.iter (fun i -> 
-        [2.. size - 3] |> List.iter (fun j -> filter i j heightMap gaussianFilter (( + )) (fun y p -> y)))
+    // do the filter on one dimension
+    [2..size - 3] |> List.iter (fun i -> 
+        [2.. size - 3] |> List.iter (fun j -> filter i j heightMap blurFilter (( + )) (fun y p -> y)))
 
     // do the filter on the other dimension
-     [2..size - 3] |> List.iter (fun i -> 
-        [2.. size - 3] |> List.iter (fun j -> filter i j heightMap gaussianFilter (fun x p -> x) (( + ))))
+    [2..size - 3] |> List.iter (fun i -> 
+        [2.. size - 3] |> List.iter (fun j -> filter i j heightMap blurFilter (fun x p -> x) (( + ))))
 
+// Take a height map and blur it using a Gaussian blur
+let gaussianBlur (heightMap:HeightMap) = 
+    let gaussianFilter = { Positions = [-3..3]; 
+                           Kernel = [| 0.006; 0.061; 0.242; 0.383; 0.242; 0.061; 0.006 |]}
+
+    blur heightMap gaussianFilter
+
+// Take a height map and blur it using a Mean filter     
+let meanFilter (heightMap:HeightMap) = 
+    let meanFilter = { Positions = [-2..2]; 
+                       Kernel = [| 0.2; 0.2; 0.2; 0.2; 0.2; 0.2 |]}
+
+    blur heightMap meanFilter
 

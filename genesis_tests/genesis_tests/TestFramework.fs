@@ -25,7 +25,10 @@ let assertIsGreaterThan target actual =
         
 // test runner
 let runSingleTest (testName, testFunction) = 
-    sprintf "%s... \n%s" testName (testFunction())       
+    try
+        sprintf "%s... \n%s" testName (testFunction())       
+    with
+    | :? System.Exception as ex -> sprintf "Test Name: %s threw exception: %s" testName ex.Message
 
 let runTests testList =    
     testList |> List.map (runSingleTest)

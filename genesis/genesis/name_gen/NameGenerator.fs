@@ -9,7 +9,7 @@ open ProbabilityTable
 let rnd = System.Random()
 
 // Randomly returns a string from values based on it's probability
-let pickString (values:Map<string, float>) : string =
+let private pickString (values:Map<string, float>) =
     let randomValue = rnd.NextDouble()
     let pick = values
                |> Map.tryPick (fun key value -> if randomValue >= value then Some(key) else None)
@@ -19,7 +19,7 @@ let pickString (values:Map<string, float>) : string =
     | None -> failwith "Can't pick letter"
 
 // Recursively creates a new name.
-let rec buildName (nameSoFar:string) (charLeft:int) (probabilityTable:ProbabilityTable) : string =
+let rec private buildName (nameSoFar:string) (charLeft:int) (probabilityTable:ProbabilityTable) =
     let lastChar = Char.ToString nameSoFar.[nameSoFar.Length - 1]
 
     let addition = match Map.containsKey lastChar probabilityTable.probabilities with
@@ -37,7 +37,7 @@ let rec buildName (nameSoFar:string) (charLeft:int) (probabilityTable:Probabilit
     | _ -> newName    // we are exactly where we want to be             
 
 // Given a pre-built probability table generates a random name.
-let generateRandomName (probabilityTable:ProbabilityTable) : string = 
+let generateRandomName (probabilityTable:ProbabilityTable) = 
     let nameLength = int (getNameLength probabilityTable.nameLengthInfo)
     // We pass in the whitespace char to start the name as this will allow us to find letters after
     // spaces in our probability table. These are the letters that start name. 

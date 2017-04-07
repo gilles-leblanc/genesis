@@ -3,10 +3,10 @@ module MidpointDisplacement
 open System.Configuration
 open HeightMap
 
-let startingSpread = ConfigurationManager.AppSettings.Item("startingSpread") |> float
-let spreadReduction = ConfigurationManager.AppSettings.Item("spreadReduction") |> float
-let landCornerInitValue = ConfigurationManager.AppSettings.Item("landCornerInitValue") |> float
-let seaCornerInitValue = ConfigurationManager.AppSettings.Item("seaCornerInitValue") |> float
+let private startingSpread = ConfigurationManager.AppSettings.Item("startingSpread") |> float
+let private spreadReduction = ConfigurationManager.AppSettings.Item("spreadReduction") |> float
+let private landCornerInitValue = ConfigurationManager.AppSettings.Item("landCornerInitValue") |> float
+let private seaCornerInitValue = ConfigurationManager.AppSettings.Item("seaCornerInitValue") |> float
 
 // set the four corners to random values
 let initCorners (hm:HeightMap) (rnd:System.Random) =

@@ -3,12 +3,12 @@ module ValueNoise
 open System.Configuration
 open HeightMap
 
-let dimming = ConfigurationManager.AppSettings.Item("dimming") |> float
-let minLight = ConfigurationManager.AppSettings.Item("minLight") |> float
-let lightBoost = ConfigurationManager.AppSettings.Item("lightBoost") |> float
+let private dimming = ConfigurationManager.AppSettings.Item("dimming") |> float
+let private minLight = ConfigurationManager.AppSettings.Item("minLight") |> float
+let private lightBoost = ConfigurationManager.AppSettings.Item("lightBoost") |> float
 
 // use bilinear interpolation to smooth out the noise values
-let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float = 
+let private bilinearInterpolation (origMap:HeightMap) x y zoomLevel = 
     let x' = float x / zoomLevel
     let y' = float y / zoomLevel
     
@@ -31,7 +31,7 @@ let bilinearInterpolation (origMap:HeightMap) x y zoomLevel : float =
 // The turbulence function creates many octaves, or values with different zoom levels.
 // Each octave brightness decreases has it's zoom decreases to reduce it's effect on the whole.
 // The values are meant to be average into a single value.
-let rec turbulence heightMap x y zoom brightnessLevel values =    
+let rec private turbulence heightMap x y zoom brightnessLevel values =    
     let newBrightness = match brightnessLevel with                       
                         | b when b - dimming > minLight -> b - dimming  // reduce brightness
                         | _ -> minLight                                 // do not reduce past this point

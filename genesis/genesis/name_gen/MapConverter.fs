@@ -11,7 +11,7 @@ type MapConvert<'f,'t when 'f : comparison>() =
         |> Seq.map (fun kv -> kv.Key, kv.Value)
         |> Map.ofSeq
 
-let mapConverter = {
+let internal mapConverter = {
   new JsonConverter() with
     override __.CanConvert (t:Type) =
       t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Map<_, _>>

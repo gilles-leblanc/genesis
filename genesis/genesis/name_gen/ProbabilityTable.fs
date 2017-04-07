@@ -11,7 +11,7 @@ type ProbabilityTable = { probabilities:Map<string, Map<string, float>>;
                           nameLengthInfo:NameLengthInfo }
 
 // Parses a string and count the total number of occurrences of substrings of size length
-let rec countOccurrences (input:string) (occurrenceTable:Map<string, float>) length = 
+let rec countOccurrences input (occurrenceTable:Map<string, float>) length = 
     let adjLen = length - 1
     
     match input |> Seq.toList with
@@ -30,7 +30,7 @@ let rec countOccurrences (input:string) (occurrenceTable:Map<string, float>) len
 
 // Return a new probability table with the key value pair added.
 // Given letter X, a probability table gives a percentage for letter Y to appear following letter X.
-let addProbability (key:string) value (probabilityTable:Map<string, Map<string, float>>) length =
+let private addProbability (key:string) value (probabilityTable:Map<string, Map<string, float>>) length =
     let mainKey = Char.ToString key.[0]
     let subKey = key.[1..] 
 
@@ -50,7 +50,7 @@ let addProbability (key:string) value (probabilityTable:Map<string, Map<string, 
 // of 0.25 0.75 1.0, we are presenting the values in decreasing order starting from 1 to make
 // picking the right value easier later on. When we will pick the letters we will draw a random
 // number and check if it is greater than the value.
-let cumulate map =
+let private cumulate map =
     let total = Map.fold (fun acc key value -> acc + value) 0.0 map
         
     let _, cumulativeSubMap = 
@@ -77,16 +77,16 @@ let buildProbabilityTable (input:string) length : ProbabilityTable =
     { probabilities = table; nameLengthInfo = nameLengths }
 
 // Given an input file path, creates a probability table calling buildProbabilityTable
-let buildProbabilityTableFromMediaFile (filePath:string) length : ProbabilityTable = 
+let buildProbabilityTableFromMediaFile filePath length : ProbabilityTable = 
     let input = File.ReadAllText(filePath)
     buildProbabilityTable input length
 
 // Given an input file path for an already built serialized probabilityTable, return this table
-let buildProbabilityTableFromSerializationFile (filePath:string) length : ProbabilityTable = 
+let buildProbabilityTableFromSerializationFile filePath length : ProbabilityTable = 
     let json = File.ReadAllText(filePath)
     JsonConvert.DeserializeObject<ProbabilityTable>(json, mapConverter)
 
 // Serialize a ProbabilityTable to file
-let serializeProbabilityTable (filePath:string) (table:ProbabilityTable) =
+let serializeProbabilityTable filePath (table:ProbabilityTable) =
     let json = JsonConvert.SerializeObject table
     File.WriteAllText(filePath, json)

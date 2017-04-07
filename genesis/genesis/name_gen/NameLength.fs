@@ -10,7 +10,7 @@ type NameLengthInfo = { mean:float; standardDeviation: float }
 
 // Given an input string returns the NameLengthInfo record that can be later used to draw a random
 // value from the normal distribution. 
-let getNameLengthInfo (input:string) : NameLengthInfo =
+let internal getNameLengthInfo (input:string) : NameLengthInfo =
     let names = input.Split [|' '|]
     let numberOfNames = float names.Length
     let namesLengths = names |> Array.map (fun name -> float name.Length)
@@ -20,7 +20,7 @@ let getNameLengthInfo (input:string) : NameLengthInfo =
     { mean = mean; standardDeviation = standardDeviation }
 
 // Given a NameLengthInfo returns a random value drawn from a normal (gaussian) distribution
-let getNameLength (nameLengthInfo:NameLengthInfo) : int =        
+let internal getNameLength (nameLengthInfo:NameLengthInfo) =        
     let mean = nameLengthInfo.mean
     let standardDeviation = nameLengthInfo.standardDeviation
     let normalDistribution = Normal(mean, standardDeviation)

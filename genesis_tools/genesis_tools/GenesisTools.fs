@@ -10,7 +10,7 @@ open MidpointDisplacement
 open ValueNoise
 open Terrain
 
-let generateMap option =
+let private generateMap option =
     match option with
     | MidpointDisplacement ->         
         let map = newHeightMap 10
@@ -19,15 +19,15 @@ let generateMap option =
     | ValueNoise ->
         generateNoise 1024 156.0
 
-let generateName length fileName = 
+let private generateName length fileName = 
     let table = buildProbabilityTableFromMediaFile fileName length
     printfn "%s" (generateRandomName table)
 
-let serializeName length inFileName outFileName =
+let private serializeName length inFileName outFileName =
     let table = buildProbabilityTableFromMediaFile inFileName length
     serializeProbabilityTable outFileName table
 
-let generateTerrain () =
+let private generateTerrain () =
     let map = generateMap MidpointDisplacement
     let rainMap = generateMap MidpointDisplacement
     map |> heightMapToPng "out.png"

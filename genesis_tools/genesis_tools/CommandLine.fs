@@ -9,6 +9,7 @@ type ToolsOption =
         | NameGenerator of NameGeneratorOptions
         | NameSerializer of NameSerializerOptions
         | TerrainGenerator
+        | Terraform
         | NoOptions
 
 type CommandLineOptions = { tool:ToolsOption }
@@ -28,4 +29,5 @@ let parseCommandLine args =
     | "/serialize"::l::i::[o] -> { tool = NameSerializer { Length=l |> int; InFileName=i; OutFileName=o } }
     | "/serialize"::xs -> error (printfn "/serialize is missing parameters") 
     | "/terrain"::xs -> { tool = TerrainGenerator }
+    | "/terraform"::xs -> { tool = Terraform }
     | x::xs -> error (printfn "Option '%s' is unrecognized" x)

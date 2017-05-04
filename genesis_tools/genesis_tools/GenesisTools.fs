@@ -9,6 +9,7 @@ open HeightMap
 open MidpointDisplacement
 open ValueNoise
 open Terrain
+open Terraform
 
 let private generateMap option =
     match option with
@@ -17,7 +18,7 @@ let private generateMap option =
         midpointDisplacement map 
         map
     | ValueNoise ->
-        generateNoise 1024 156.0
+        generateNoise 1200 156.0
 
 let private generateName length fileName = 
     let table = buildProbabilityTableFromMediaFile fileName length
@@ -33,6 +34,9 @@ let private generateTerrain () =
     map |> heightMapToPng "out.png"
     makeTerrain gradientColors map rainMap
 
+let private terraform () =
+    terraform ()
+
 [<EntryPoint>]
 let main argv =
     let toolOption = parseCommandLine (argv |> Array.toList)
@@ -42,6 +46,7 @@ let main argv =
     | NameGenerator opts -> generateName opts.Length opts.FileName |> ignore
     | NameSerializer opts -> serializeName opts.Length opts.InFileName opts.OutFileName |> ignore
     | TerrainGenerator -> generateTerrain () |> ignore
+    | Terraform -> terraform () |> ignore
     | NoOptions -> ()
 
     0 

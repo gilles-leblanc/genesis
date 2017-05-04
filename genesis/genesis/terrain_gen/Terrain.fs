@@ -9,10 +9,15 @@ open Blur
 type Image = { Size:int; Pixels:int * int * int array }
 type Range = { Start:int; End:int; LowColor:int * int * int; HighColor:int * int * int }
 
-let private blueRange = { Start=0; End=74; LowColor=10, 10, 100; HighColor=10, 10, 200 }    
-let private brownRange = { Start=75; End=180; LowColor=122, 104, 33; HighColor=244, 209, 66 }
+let private blueRange = { Start=0; End=74; LowColor=70, 150, 195; HighColor=120, 200, 245 }    
+let private brownRange = { Start=75; End=180; LowColor=180, 139, 59; HighColor=224, 199, 90 }
 let private greyRange = { Start=181; End=255; LowColor=69, 69, 69; HighColor=129, 129, 129 }
-let private greenRange = { Start=175; End=255; LowColor=19, 115, 58; HighColor=19, 200, 58 }
+let private greenRange = { Start=150; End=255; LowColor=59, 99, 30; HighColor=149, 199, 99 }
+
+// get wether a value is in a range
+let private inRange value range = 
+    let { Start=start; End=``end`` } = range
+    value >= start && value <= ``end``    
 
 // get a gradient colors using a range and percentage
 let private gradient pct range =
@@ -29,22 +34,18 @@ let private gradient pct range =
 
 // get a specific color for a specific point using a color function
 let getColors mapPoint rainPoint pctFun =         
-    // get wether a value is in a range
-    let inRange value range = 
-        let { Start=start; End=``end`` } = range
-        value >= start && value <= ``end``    
-
     match convertFloatToInt mapPoint, convertFloatToInt rainPoint with
+    // | x, y when inRange y greenRange -> gradient (pctFun y greenRange) greenRange
     | x, y when inRange x blueRange -> gradient (pctFun x blueRange) blueRange
-    | x, y when inRange x brownRange && 
-                inRange y greenRange -> gradient (pctFun y greenRange) greenRange
+    // | x, y when inRange x brownRange && 
+    //             inRange y greenRange -> gradient (pctFun y greenRange) greenRange    
     | x, y when inRange x brownRange -> gradient (pctFun x brownRange) brownRange
     | x, y when inRange x greyRange -> gradient (pctFun x greyRange) greyRange
-    | x, y -> failwith "invalid colors operation"
+    | x, y -> failwith (sprintf "invalid colors operation x:%i y:%i" x y)
 
 // convert a heightmap value to rgb solid colors values
 let solidColors mapPoint rainPoint =
-    getColors mapPoint rainPoint (fun value range -> 100.0)
+    getColors mapPoint rainPoint (fun value range -> 1.0)
 
 // convert a heightmap value to rgb gradient colors values
 let gradientColors mapPoint rainPoint =  
@@ -64,3 +65,7 @@ let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) =
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
         
     png.Save("terrain.png", Imaging.ImageFormat.Png) |> ignore
+
+// return wether the value is a mountain
+let isMountain value =
+    inRange value greyRange

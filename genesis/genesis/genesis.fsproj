@@ -53,6 +53,7 @@
     <Compile Include="terrain_gen/MidpointDisplacement.fs" />
     <Compile Include="terrain_gen/ValueNoise.fs" />
     <Compile Include="terrain_gen/Terrain.fs" />
+    <Compile Include="terrain_gen/Terraform.fs" />
     <Compile Include="genesis.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>

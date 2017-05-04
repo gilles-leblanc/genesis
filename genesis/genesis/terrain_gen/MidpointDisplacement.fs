@@ -72,7 +72,6 @@ let midpointDisplacement hm =
         let variation = (fun x -> x + (randomize rnd spread)) >> normalizeValue
         let adjustedSpread = spread * spreadReduction
         
-        // the lambda passed in as a parameter is temporary until a define a better function
         middle hm ulCorner urCorner llCorner lrCorner variation 
         center hm ulCorner urCorner llCorner lrCorner variation
 

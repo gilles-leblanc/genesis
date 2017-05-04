@@ -8,6 +8,15 @@ type HeightMap = {Size:int; Map:float array} with
         
     member this.Set x y value = this.Map.[x * this.Size + y] <- value
 
+    // return if a x, y coordinates fits inside the bounds of the map
+    member this.CoordValid x y = 
+        match (x, y) with
+        | (x, _) when x < 0 -> false
+        | (_, y) when y < 0 -> false
+        | (x, _) when x >= this.Size -> false
+        | (_, y) when y >= this.Size -> false
+        | _ -> true
+
 // returns a square matrix of size 2^n + 1 HeightMap object
 let newHeightMap n : HeightMap =
     let size = ( pown 2 n ) + 1

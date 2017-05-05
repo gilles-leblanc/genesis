@@ -185,4 +185,18 @@ let terrainGenTests =
         fun() ->
             let hm = newHeightMap 10
             assertIsFalse(hm.CoordValid 1024 1025);
+
+        "heightmap Add will correctly add the value to the existing value",
+        fun() ->
+            let hm = newHeightMap 4
+            hm.Set 1 1 0.5
+            hm.Add 1 1 0.2
+            assertAreEqual 0.7 (hm.Get 1 1);
+
+        "heightmap Substract will correctly substract the value to the existing value",
+        fun() ->
+            let hm = newHeightMap 4
+            hm.Set 1 1 0.5
+            hm.Substract 1 1 0.2
+            assertAreEqual 0.3 (hm.Get 1 1);
     ]

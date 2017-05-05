@@ -41,7 +41,7 @@ let getColors mapPoint rainPoint pctFun =
     //             inRange y greenRange -> gradient (pctFun y greenRange) greenRange    
     | x, y when inRange x brownRange -> gradient (pctFun x brownRange) brownRange
     | x, y when inRange x greyRange -> gradient (pctFun x greyRange) greyRange
-    | x, y -> failwith (sprintf "invalid colors operation x:%i y:%i" x y)
+    | x, y -> failwith (sprintf "invalid colors operation mp:%i rp:%i" x y)
 
 // convert a heightmap value to rgb solid colors values
 let solidColors mapPoint rainPoint =

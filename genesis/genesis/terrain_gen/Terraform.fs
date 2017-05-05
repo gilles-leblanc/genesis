@@ -10,6 +10,7 @@ open Terrain
 open Blur
 
 let private absorptionFactor = ConfigurationManager.AppSettings.Item("absorptionFactor") |> float
+let private numberRunOffSteps = ConfigurationManager.AppSettings.Item("numberRunOffSteps") |> int
 
 // Given a height map and a pair of x and y coordinates, find the lowest neighboring point.
 let findLowestNeighbor (heightMap:HeightMap) (x, y) : int * int =
@@ -25,29 +26,44 @@ let findLowestNeighbor (heightMap:HeightMap) (x, y) : int * int =
     neighbors |> List.minBy (fun (nx, ny) -> heightMap.Get nx ny)
 
 // simulate water run off on the height map
-let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
+let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =   
     // make a copy of the map not to modify the original as we work on it
     let watershedStep = newHeightMap 10
 
-    // calculate water runoff at this step
+    // calculate water runoff for each coord
     for x in [0..landmassMap.Size-1] do
         for y in [0..landmassMap.Size-1] do
-            // find lowest neighbor
-            let (lx, ly) = findLowestNeighbor landmassMap (x, y)
+            // get water at current coordinate
+            match rainMap.Get x y with
+            | waterAt when waterAt > 0.0 -> 
+                // find lowest neighbor
+                let (lx, ly) = findLowestNeighbor landmassMap (x, y)
 
-            // todo: only move if we go over the lower neighbor height when including the water
-            // todo: only move the amount of water that "spills" over
-            // todo: erode land by water action
+                // get height and calculate spill            
+                let currentHeight = landmassMap.Get x y
+                let lowestNeighborHeight = landmassMap.Get lx ly
 
-            // move water to this neighbor
-            watershedStep.Set x y (rainMap.Get lx ly)
+                match currentHeight with
+                // if the current height is equal or higher to the lowest neighbor height, all water
+                // will drain to the lowest neighbor
+                | current when current >= lowestNeighborHeight -> watershedStep.Add lx ly waterAt
+                                                                  rainMap.Substract x y waterAt
+                // otherwise current is smaller than the lowest neighbor, we need to calculate the amount
+                // that will spill over
+                | current -> let spillOff = (currentHeight + waterAt) - lowestNeighborHeight
+                             watershedStep.Add lx ly spillOff
+                             rainMap.Substract x y spillOff
+
+            | _ -> ignore()     // there is no water at this point, do nothing
+
+            // todo: erode land by water action           
     
     // temp png of this step
     let png = new Bitmap(watershedStep.Size, watershedStep.Size) 
 
     for x in [0..watershedStep.Size-1] do
         for y in [0..watershedStep.Size-1] do
-            let red, green, blue = gradientColors (watershedStep.Get x y) (0.0) 
+            let red, green, blue = gradientColors (normalizeValue (watershedStep.Get x y)) (0.0) 
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
         
     png.Save(sprintf "terraform%i.png" step, Imaging.ImageFormat.Png) |> ignore   
@@ -61,4 +77,13 @@ let terraform () =
     midpointDisplacement rainMap
 
     // watershed generation
-    runoff landmassMap rainMap 1      
+    let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap [1..numberRunOffSteps]    
+
+    let png = new Bitmap(landmassMap.Size, landmassMap.Size) 
+
+    for x in [0..landmassMap.Size-1] do
+        for y in [0..landmassMap.Size-1] do
+            let red, green, blue = gradientColors (landmassMap.Get x y) (0.0) 
+            png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
+
+    png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   

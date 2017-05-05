@@ -8,6 +8,10 @@ type HeightMap = {Size:int; Map:float array} with
         
     member this.Set x y value = this.Map.[x * this.Size + y] <- value
 
+    member this.Add x y value = this.Set x y ((this.Get x y) + value)
+
+    member this.Substract x y value = this.Set x y ((this.Get x y) - value)
+
     // return if a x, y coordinates fits inside the bounds of the map
     member this.CoordValid x y = 
         match (x, y) with

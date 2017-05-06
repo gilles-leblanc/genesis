@@ -31,8 +31,9 @@ let private serializeName length inFileName outFileName =
 let private generateTerrain () =
     let map = generateMap MidpointDisplacement
     let rainMap = generateMap MidpointDisplacement
+    let waterShedMap = newHeightMap 10
     map |> heightMapToPng "out.png"
-    makeTerrain gradientColors map rainMap
+    makeTerrain gradientColors map rainMap waterShedMap
 
 let private terraform () =
     terraform ()

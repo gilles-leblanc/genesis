@@ -56,17 +56,10 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
 
             | _ -> ignore()     // there is no water at this point, do nothing
 
+            // let some water behind as it moves to create rivers
+            // get better river shapes, diagonal rivers not interesting
             // todo: erode land by water action           
     
-    // temp png of this step
-    let png = new Bitmap(watershedStep.Size, watershedStep.Size) 
-
-    for x in [0..watershedStep.Size-1] do
-        for y in [0..watershedStep.Size-1] do
-            let red, green, blue = gradientColors (normalizeValue (watershedStep.Get x y)) (0.0) 
-            png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
-        
-    png.Save(sprintf "terraform%i.png" step, Imaging.ImageFormat.Png) |> ignore   
     watershedStep
 
 let terraform () =       
@@ -83,7 +76,9 @@ let terraform () =
 
     for x in [0..landmassMap.Size-1] do
         for y in [0..landmassMap.Size-1] do
-            let red, green, blue = gradientColors (landmassMap.Get x y) (0.0) 
+            let red, green, blue = gradientColors (landmassMap.Get x y) 0.0 0.0
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
 
     png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   
+
+    makeTerrain gradientColors landmassMap rainMap watershedMap

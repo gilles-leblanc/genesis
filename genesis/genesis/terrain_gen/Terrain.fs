@@ -32,26 +32,33 @@ let private gradient pct range =
     // changing to tuple, if successful rebase with previous commit
     (mix lr hr pct |> int), (mix lg hg pct |> int), (mix lb hb pct |> int)   
 
+// Return 100% color value
+let private fullColor value range = 1.0
+
 // get a specific color for a specific point using a color function
-let getColors mapPoint rainPoint pctFun =         
-    match convertFloatToInt mapPoint, convertFloatToInt rainPoint with
-    // | x, y when inRange y greenRange -> gradient (pctFun y greenRange) greenRange
-    | x, y when inRange x blueRange -> gradient (pctFun x blueRange) blueRange
-    // | x, y when inRange x brownRange && 
+let getColors mapPoint rainPoint watershedPoint pctFun =         
+    // printfn "mapPoint %f  rainPoint %f watershedPoint %f " mapPoint rainPoint watershedPoint
+    match convertFloatToInt mapPoint, 
+          convertFloatToInt rainPoint, 
+          convertFloatToInt watershedPoint with
+    | x, y, z when z > 0 -> gradient (fullColor z blueRange) blueRange
+    // | x, y, z when inRange y greenRange -> gradient (pctFun y greenRange) greenRange
+    | x, y, z when inRange x blueRange -> gradient (pctFun x blueRange) blueRange
+    // | x, y, z when inRange x brownRange && 
     //             inRange y greenRange -> gradient (pctFun y greenRange) greenRange    
-    | x, y when inRange x brownRange -> gradient (pctFun x brownRange) brownRange
-    | x, y when inRange x greyRange -> gradient (pctFun x greyRange) greyRange
-    | x, y -> failwith (sprintf "invalid colors operation mp:%i rp:%i" x y)
+    | x, y, z when inRange x brownRange -> gradient (pctFun x brownRange) brownRange
+    | x, y, z when inRange x greyRange -> gradient (pctFun x greyRange) greyRange
+    | x, y, z -> failwith (sprintf "invalid colors operation mp:%i rp:%i wp:%i" x y z)
 
 // convert a heightmap value to rgb solid colors values
-let solidColors mapPoint rainPoint =
-    getColors mapPoint rainPoint (fun value range -> 1.0)
+let solidColors mapPoint rainPoint waterShedPoint =
+    getColors mapPoint rainPoint waterShedPoint fullColor
 
 // convert a heightmap value to rgb gradient colors values
-let gradientColors mapPoint rainPoint =  
-    getColors mapPoint rainPoint (fun value range -> float (value - range.Start) / 100.0)
+let gradientColors mapPoint rainPoint waterShedPoint =  
+    getColors mapPoint rainPoint waterShedPoint (fun value range -> float (value - range.Start) / 100.0)
 
-let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) = 
+let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) (watershedMap:HeightMap) = 
     // convert 1 float value to rgb
     // apply filters during conversion
     let png = new Bitmap(heightMap.Size, heightMap.Size)
@@ -61,7 +68,9 @@ let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) =
 
     for x in [0..heightMap.Size-1] do
         for y in [0..heightMap.Size-1] do
-            let red, green, blue = colorFunction (heightMap.Get x y) (rainMap.Get x y) 
+            let red, green, blue = colorFunction (heightMap.Get x y |> normalizeValue)
+                                                 (rainMap.Get x y |> normalizeValue) 
+                                                 (watershedMap.Get x y |> normalizeValue)
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
         
     png.Save("terrain.png", Imaging.ImageFormat.Png) |> ignore

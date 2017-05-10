@@ -38,26 +38,30 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
             | waterAt when waterAt > 0.0 -> 
                 // find lowest neighbor
                 let (lx, ly) = findLowestNeighbor landmassMap (x, y)
+                
+                match isWater (landmassMap.Get lx ly) with
+                // if the water runoff has reached a body of water, drain it to stop further runoff
+                | true -> rainMap.Substract x y waterAt
+                // if we haven't reached a body of water, continue runoff
+                | false -> // get height and calculate spill            
+                    let currentHeight = landmassMap.Get x y
+                    let lowestNeighborHeight = landmassMap.Get lx ly
 
-                // get height and calculate spill            
-                let currentHeight = landmassMap.Get x y
-                let lowestNeighborHeight = landmassMap.Get lx ly
-
-                match currentHeight with
-                // if the current height is equal or higher to the lowest neighbor height, all water
-                // will drain to the lowest neighbor
-                | current when current >= lowestNeighborHeight -> watershedStep.Add lx ly waterAt
-                                                                  rainMap.Substract x y waterAt
-                // otherwise current is smaller than the lowest neighbor, we need to calculate the amount
-                // that will spill over
-                | current -> let spillOff = (currentHeight + waterAt) - lowestNeighborHeight
-                             watershedStep.Add lx ly spillOff
-                             rainMap.Substract x y spillOff
+                    match currentHeight with
+                    // if the current height is equal or higher to the lowest neighbor height, 
+                    // all water will drain to the lowest neighbor
+                    | current when current >= lowestNeighborHeight -> watershedStep.Add lx ly waterAt
+                                                                      rainMap.Substract x y waterAt
+                    // otherwise current is smaller than the lowest neighbor, 
+                    // we need to calculate the amount that will spill over
+                    | current -> let spillOff = (currentHeight + waterAt) - lowestNeighborHeight
+                                 watershedStep.Add lx ly spillOff
+                                 rainMap.Substract x y spillOff
 
             | _ -> ignore()     // there is no water at this point, do nothing
 
-            // let some water behind as it moves to create rivers
-            // get better river shapes, diagonal rivers not interesting
+            // todo: let some water behind as it moves to create rivers
+            // todo: get better river shapes, diagonal rivers not interesting
             // todo: erode land by water action           
     
     watershedStep
@@ -72,13 +76,13 @@ let terraform () =
     // watershed generation
     let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap [1..numberRunOffSteps]    
 
-    let png = new Bitmap(landmassMap.Size, landmassMap.Size) 
+    // let png = new Bitmap(landmassMap.Size, landmassMap.Size) 
 
-    for x in [0..landmassMap.Size-1] do
-        for y in [0..landmassMap.Size-1] do
-            let red, green, blue = gradientColors (landmassMap.Get x y) 0.0 0.0
-            png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
+    // for x in [0..landmassMap.Size-1] do
+    //     for y in [0..landmassMap.Size-1] do
+    //         let red, green, blue = gradientColors (landmassMap.Get x y) 0.0 0.0
+    //         png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
 
-    png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   
+    // png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   
 
     makeTerrain gradientColors landmassMap rainMap watershedMap

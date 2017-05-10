@@ -15,9 +15,24 @@ let private greyRange = { Start=181; End=255; LowColor=69, 69, 69; HighColor=129
 let private greenRange = { Start=150; End=255; LowColor=59, 99, 30; HighColor=149, 199, 99 }
 
 // get wether a value is in a range
-let private inRange value range = 
-    let { Start=start; End=``end`` } = range
-    value >= start && value <= ``end``    
+let private isInRange range value = 
+    let inRange range value = 
+        let { Start=start; End=``end`` } = range
+        value >= start && value <= ``end``    
+
+    convertFloatToInt value |> inRange range
+
+// return whether the value is a mountain
+let isMountain value =
+    isInRange greyRange value
+
+// return whether the value is water
+let isWater value =
+    isInRange blueRange value
+
+// return whether the value is a plain/hills
+let isPlain value =
+    isInRange brownRange value
 
 // get a gradient colors using a range and percentage
 let private gradient pct range =
@@ -38,17 +53,15 @@ let private fullColor value range = 1.0
 // get a specific color for a specific point using a color function
 let getColors mapPoint rainPoint watershedPoint pctFun =         
     // printfn "mapPoint %f  rainPoint %f watershedPoint %f " mapPoint rainPoint watershedPoint
-    match convertFloatToInt mapPoint, 
-          convertFloatToInt rainPoint, 
-          convertFloatToInt watershedPoint with
-    | x, y, z when z > 0 -> gradient (fullColor z blueRange) blueRange
-    // | x, y, z when inRange y greenRange -> gradient (pctFun y greenRange) greenRange
-    | x, y, z when inRange x blueRange -> gradient (pctFun x blueRange) blueRange
-    // | x, y, z when inRange x brownRange && 
-    //             inRange y greenRange -> gradient (pctFun y greenRange) greenRange    
-    | x, y, z when inRange x brownRange -> gradient (pctFun x brownRange) brownRange
-    | x, y, z when inRange x greyRange -> gradient (pctFun x greyRange) greyRange
-    | x, y, z -> failwith (sprintf "invalid colors operation mp:%i rp:%i wp:%i" x y z)
+    match mapPoint, rainPoint, watershedPoint with
+    | x, y, z when z > 0.0 -> gradient (fullColor z blueRange) blueRange
+    // | x, y, z when inRange greenRange y -> gradient (pctFun y greenRange) greenRange
+    | x, y, z when isWater x -> gradient (pctFun x blueRange) blueRange
+    // | x, y, z when inRange brownRange x && 
+    //             inRange greenRange y -> gradient (pctFun y greenRange) greenRange    
+    | x, y, z when isPlain x -> gradient (pctFun x brownRange) brownRange
+    | x, y, z when isMountain x -> gradient (pctFun x greyRange) greyRange
+    | x, y, z -> failwith (sprintf "invalid colors operation mp:%f rp:%f wp:%f" x y z)
 
 // convert a heightmap value to rgb solid colors values
 let solidColors mapPoint rainPoint waterShedPoint =
@@ -56,7 +69,8 @@ let solidColors mapPoint rainPoint waterShedPoint =
 
 // convert a heightmap value to rgb gradient colors values
 let gradientColors mapPoint rainPoint waterShedPoint =  
-    getColors mapPoint rainPoint waterShedPoint (fun value range -> float (value - range.Start) / 100.0)
+    getColors mapPoint rainPoint waterShedPoint 
+             (fun value range -> float (convertFloatToInt value - range.Start) / 100.0)
 
 let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) (watershedMap:HeightMap) = 
     // convert 1 float value to rgb
@@ -65,16 +79,12 @@ let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) (watersh
 
     //gaussianBlur heightMap       // apply gaussian blurring to the height map
     //meanFilter heightMap         // apply mean filter blurring
-
+    
     for x in [0..heightMap.Size-1] do
         for y in [0..heightMap.Size-1] do
             let red, green, blue = colorFunction (heightMap.Get x y |> normalizeValue)
                                                  (rainMap.Get x y |> normalizeValue) 
                                                  (watershedMap.Get x y |> normalizeValue)
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
-        
+    
     png.Save("terrain.png", Imaging.ImageFormat.Png) |> ignore
-
-// return wether the value is a mountain
-let isMountain value =
-    inRange value greyRange

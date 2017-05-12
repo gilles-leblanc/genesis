@@ -10,6 +10,7 @@ open Terrain
 open Blur
 
 let private absorptionFactor = ConfigurationManager.AppSettings.Item("absorptionFactor") |> float
+let private erosionFactor = ConfigurationManager.AppSettings.Item("erosionFactor") |> float
 let private numberRunOffSteps = ConfigurationManager.AppSettings.Item("numberRunOffSteps") |> int
 
 // Given a height map and a pair of x and y coordinates, find the lowest neighboring point.
@@ -58,6 +59,9 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
                                  watershedStep.Add lx ly spillOff
                                  rainMap.Substract x y spillOff
 
+                    // erode landmass under passage of water
+                    landmassMap.Substract x y erosionFactor
+
             | _ -> ignore()     // there is no water at this point, do nothing
 
             // todo: let some water behind as it moves to create rivers
@@ -76,13 +80,13 @@ let terraform () =
     // watershed generation
     let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap [1..numberRunOffSteps]    
 
-    // let png = new Bitmap(landmassMap.Size, landmassMap.Size) 
+    let png = new Bitmap(landmassMap.Size, landmassMap.Size) 
 
-    // for x in [0..landmassMap.Size-1] do
-    //     for y in [0..landmassMap.Size-1] do
-    //         let red, green, blue = gradientColors (landmassMap.Get x y) 0.0 0.0
-    //         png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
+    for x in [0..landmassMap.Size-1] do
+        for y in [0..landmassMap.Size-1] do
+            let red, green, blue = gradientColors (landmassMap.Get x y) 0.0 0.0
+            png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
 
-    // png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   
+    png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   
 
     makeTerrain gradientColors landmassMap rainMap watershedMap

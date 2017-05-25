@@ -48,25 +48,27 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
                     let currentHeight = landmassMap.Get x y
                     let lowestNeighborHeight = landmassMap.Get lx ly
 
+                    // take into account an "absorption factor" that accounts for absorption into the ground
+                    // and evaporaion into the air, this also prevents water from pooling too much
+                    let remaining = waterAt - absorptionFactor
+                    
                     match currentHeight with
                     // if the current height is equal or higher to the lowest neighbor height, 
                     // all water will drain to the lowest neighbor
-                    | current when current >= lowestNeighborHeight -> watershedStep.Add lx ly waterAt
+                    | current when current >= lowestNeighborHeight -> watershedStep.Add lx ly remaining
                                                                       rainMap.Substract x y waterAt
                     // otherwise current is smaller than the lowest neighbor, 
                     // we need to calculate the amount that will spill over
                     | current -> let spillOff = (currentHeight + waterAt) - lowestNeighborHeight
-                                 watershedStep.Add lx ly spillOff
+                                 watershedStep.Add lx ly remaining
                                  rainMap.Substract x y spillOff
 
                     // erode landmass under passage of water
                     landmassMap.Substract x y erosionFactor
 
-            | _ -> ignore()     // there is no water at this point, do nothing
+                    // todo: waterAt should not transfer all water, simply the water that goes "over"
 
-            // todo: let some water behind as it moves to create rivers
-            // todo: get better river shapes, diagonal rivers not interesting
-            // todo: erode land by water action           
+            | _ -> ignore()     // there is no water at this point, do nothing
     
     watershedStep
 

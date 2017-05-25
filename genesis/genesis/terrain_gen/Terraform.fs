@@ -46,27 +46,26 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
                 // if we haven't reached a body of water, continue runoff
                 | false -> // get height and calculate spill            
                     let currentHeight = landmassMap.Get x y
-                    let lowestNeighborHeight = landmassMap.Get lx ly
-
-                    // take into account an "absorption factor" that accounts for absorption into the ground
-                    // and evaporaion into the air, this also prevents water from pooling too much
-                    let remaining = waterAt - absorptionFactor
+                    let lowestNeighborHeight = landmassMap.Get lx ly                
                     
                     match currentHeight with
                     // if the current height is equal or higher to the lowest neighbor height, 
                     // all water will drain to the lowest neighbor
-                    | current when current >= lowestNeighborHeight -> watershedStep.Add lx ly remaining
+                    | current when current >= lowestNeighborHeight -> // take into account an "absorption factor" 
+                                                                      // that accounts for absorption into the ground
+                                                                      // and evaporaion into the air, this also prevents 
+                                                                      // water from pooling too much
+                                                                      let remaining = waterAt - absorptionFactor
+                                                                      watershedStep.Add lx ly remaining
                                                                       rainMap.Substract x y waterAt
                     // otherwise current is smaller than the lowest neighbor, 
                     // we need to calculate the amount that will spill over
                     | current -> let spillOff = (currentHeight + waterAt) - lowestNeighborHeight
-                                 watershedStep.Add lx ly remaining
+                                 watershedStep.Add lx ly spillOff
                                  rainMap.Substract x y spillOff
 
                     // erode landmass under passage of water
                     landmassMap.Substract x y erosionFactor
-
-                    // todo: waterAt should not transfer all water, simply the water that goes "over"
 
             | _ -> ignore()     // there is no water at this point, do nothing
     

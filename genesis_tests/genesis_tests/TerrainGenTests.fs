@@ -86,7 +86,7 @@ let terrainGenTests =
             let center = hm.Get 2 2
             assertAreEqual 0.7625 center;
 
-        "findLowestNeighbor will return the neighboring point with the lowest value 1",
+        "findLowestNeighbors will return the neighboring point with the lowest value 1",
         fun() ->
             let hm = newHeightMap 3
             hm.Set 0 0 0.5
@@ -98,10 +98,10 @@ let terrainGenTests =
             hm.Set 2 0 0.4
             hm.Set 2 1 0.6
             hm.Set 2 2 0.4
-            let lowestNeighbor = findLowestNeighbor hm (1, 1)
+            let lowestNeighbor = findLowestNeighbors hm (1, 1) |> List.head
             assertAreEqual (1, 0) lowestNeighbor;
 
-        "findLowestNeighbor will return the neighboring point with the lowest value 2",
+        "findLowestNeighbors will return the neighboring point with the lowest value 2",
         fun() ->
             let hm = newHeightMap 3
             hm.Set 0 0 0.5
@@ -113,10 +113,10 @@ let terrainGenTests =
             hm.Set 2 0 0.4
             hm.Set 2 1 0.1
             hm.Set 2 2 0.4
-            let lowestNeighbor = findLowestNeighbor hm (1, 1)
+            let lowestNeighbor = findLowestNeighbors hm (1, 1) |> List.head
             assertAreEqual (2, 1) lowestNeighbor;
 
-        "findLowestNeighbor will return the neighboring point with the lowest value 3",
+        "findLowestNeighbors will return the neighboring point with the lowest value 3",
         fun() ->
             let hm = newHeightMap 3
             hm.Set 0 0 0.5
@@ -128,10 +128,10 @@ let terrainGenTests =
             hm.Set 2 0 0.4
             hm.Set 2 1 0.6
             hm.Set 2 2 0.4
-            let lowestNeighbor = findLowestNeighbor hm (1, 1)
+            let lowestNeighbor = findLowestNeighbors hm (1, 1) |> List.head
             assertAreEqual (0, 1) lowestNeighbor;
 
-        "findLowestNeighbor will return the neighboring point with the lowest value 4",
+        "findLowestNeighbors will return the neighboring point with the lowest value 4",
         fun() ->
             let hm = newHeightMap 3
             hm.Set 0 0 0.5
@@ -143,10 +143,10 @@ let terrainGenTests =
             hm.Set 2 0 0.4
             hm.Set 2 1 0.6
             hm.Set 2 2 0.2
-            let lowestNeighbor = findLowestNeighbor hm (1, 1)
+            let lowestNeighbor = findLowestNeighbors hm (1, 1) |> List.head
             assertAreEqual (2, 2) lowestNeighbor;
 
-        "findLowestNeighbor will return the neighboring point with the lowest value with invalid coordinates 1",
+        "findLowestNeighbors will return the neighboring point with the lowest value with invalid coordinates 1",
         fun() ->
             let hm = newHeightMap 3
             hm.Set 0 0 0.5
@@ -158,10 +158,10 @@ let terrainGenTests =
             hm.Set 2 0 0.4
             hm.Set 2 1 0.6
             hm.Set 2 2 0.4
-            let lowestNeighbor = findLowestNeighbor hm (0, 1)
+            let lowestNeighbor = findLowestNeighbors hm (0, 1) |> List.head
             assertAreEqual (1, 0) lowestNeighbor;
 
-        "findLowestNeighbor will return the neighboring point with the lowest value with invalid coordinates 2",
+        "findLowestNeighbors will return the neighboring point with the lowest value with invalid coordinates 2",
         fun() ->
             let hm = newHeightMap 3
             hm.Set 0 0 0.5
@@ -173,8 +173,38 @@ let terrainGenTests =
             hm.Set 2 0 0.4
             hm.Set 2 1 0.6
             hm.Set 2 2 0.4
-            let lowestNeighbor = findLowestNeighbor hm (0, 0)
+            let lowestNeighbor = findLowestNeighbors hm (0, 0) |> List.head
             assertAreEqual (1, 0) lowestNeighbor;
+
+        "findLowestNeighbors will return the two lowest neighboring points",
+        fun() ->
+            let hm = newHeightMap 3
+            hm.Set 0 0 0.5
+            hm.Set 0 1 1.0
+            hm.Set 0 2 0.2
+            hm.Set 1 0 1.0
+            hm.Set 1 1 0.1
+            hm.Set 1 2 0.35
+            hm.Set 2 0 0.4
+            hm.Set 2 1 0.6
+            hm.Set 2 2 0.2
+            let lowestNeighbors = findLowestNeighbors hm (1, 1) 
+            assertAreEqual 2 (lowestNeighbors |> List.length);            
+
+        "findLowestNeighbors will return the three lowest neighboring points",
+        fun() ->
+            let hm = newHeightMap 3
+            hm.Set 0 0 0.5
+            hm.Set 0 1 1.0
+            hm.Set 0 2 0.2
+            hm.Set 1 0 0.2
+            hm.Set 1 1 0.1
+            hm.Set 1 2 0.35
+            hm.Set 2 0 0.4
+            hm.Set 2 1 0.6
+            hm.Set 2 2 0.2
+            let lowestNeighbors = findLowestNeighbors hm (1, 1) 
+            assertAreEqual 3 (lowestNeighbors |> List.length);            
 
         "heightmap.CoordValid will correctly indicate if a coordinate is valid 1",
         fun() ->

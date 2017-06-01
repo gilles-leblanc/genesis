@@ -62,7 +62,7 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
                     // we need to calculate the amount that will spill over
                     | current -> let spillOff = (currentHeight + waterAt) - lowestNeighborHeight
                                  let remaining = spillOff - absorptionFactor
-                                 watershedStep.Add lx ly spillOff
+                                 watershedStep.Add lx ly remaining
                                  rainMap.Substract x y spillOff
 
                     // erode landmass under passage of water

@@ -11,6 +11,8 @@ open Blur
 
 let private absorptionFactor = ConfigurationManager.AppSettings.Item("absorptionFactor") |> float
 let private erosionFactor = ConfigurationManager.AppSettings.Item("erosionFactor") |> float
+let private minimumErodedLandHeight = ConfigurationManager.AppSettings.Item("minimumErodedLandHeight") |> float
+
 let private numberRunOffSteps = ConfigurationManager.AppSettings.Item("numberRunOffSteps") |> int
 
 // Given a height map and a pair of x and y coordinates, find the lowest neighboring point.
@@ -28,6 +30,12 @@ let findLowestNeighbors (heightMap:HeightMap) (x, y) : (int * int) list =
 
     // get all neighbors with this minimum value
     neighbors |> List.filter (fun (nx, ny) -> heightMap.Get nx ny = minValue)
+
+// erode the landmass following the action of water
+let private erode x y (landmassMap:HeightMap) =
+    match landmassMap.Get x y with 
+    | currentHeight when currentHeight > minimumErodedLandHeight -> landmassMap.Substract x y erosionFactor
+    | _ -> ignore() // do not erode past this point
 
 // simulate water run off on the height map
 let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =   
@@ -72,7 +80,7 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
                                      rainMap.Substract x y spillOff
 
                         // erode landmass under passage of water
-                        landmassMap.Substract x y erosionFactor
+                        erode x y landmassMap
                 )
 
             | _ -> ignore()     // there is no water at this point, do nothing

@@ -39,7 +39,6 @@ let private erode x y (landmassMap:HeightMap) =
 
 // simulate water run off on the height map
 let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =   
-    // make a copy of the map not to modify the original as we work on it
     let watershedStep = newHeightMap 10
 
     // calculate water runoff for each coord
@@ -94,14 +93,17 @@ let terraform () =
     let rainMap = newHeightMap 10
     midpointDisplacement rainMap
 
+    // make a copy of the rainMap because runoff changes the map
+    let rainMap' = newHeightMap' rainMap.Size (rainMap.Map |> Array.copy)
+
     // watershed generation
-    let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap [1..numberRunOffSteps]    
+    let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap' [1..numberRunOffSteps]    
 
     let png = new Bitmap(landmassMap.Size, landmassMap.Size) 
 
     for x in [0..landmassMap.Size-1] do
         for y in [0..landmassMap.Size-1] do
-            let red, green, blue = gradientColors (landmassMap.Get x y) 0.0 0.0
+            let red, green, blue = gradientColors (rainMap.Get x y) 0.0 0.0
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
 
     png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   

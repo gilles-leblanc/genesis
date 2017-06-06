@@ -52,14 +52,11 @@ let private fullColor value range = 1.0
 
 // get a specific color for a specific point using a color function
 let getColors mapPoint rainPoint watershedPoint pctFun =         
-    // printfn "mapPoint %f  rainPoint %f watershedPoint %f " mapPoint rainPoint watershedPoint
     match mapPoint, rainPoint, watershedPoint with
-    | x, y, z when z > 0.0 -> gradient (fullColor z blueRange) blueRange
-    // | x, y, z when inRange greenRange y -> gradient (pctFun y greenRange) greenRange
     | x, y, z when isWater x -> gradient (pctFun x blueRange) blueRange
-    // | x, y, z when inRange brownRange x && 
-    //             inRange greenRange y -> gradient (pctFun y greenRange) greenRange    
-    | x, y, z when isPlain x -> gradient (pctFun x brownRange) brownRange
+    | x, y, z when isPlain x &&                                                         // use brownRange pct with
+                   isInRange greenRange y -> gradient (pctFun x brownRange) greenRange  // greenRange values to match  
+    | x, y, z when isPlain x -> gradient (pctFun x brownRange) brownRange               // underlying terrain
     | x, y, z when isMountain x -> gradient (pctFun x greyRange) greyRange
     | x, y, z -> failwith (sprintf "invalid colors operation mp:%f rp:%f wp:%f" x y z)
 

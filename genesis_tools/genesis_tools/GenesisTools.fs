@@ -18,7 +18,7 @@ let private generateMap option =
         midpointDisplacement map 
         map
     | ValueNoise ->
-        generateNoise 1200 156.0
+        generateNoise 1200 
 
 let private generateName length fileName = 
     let table = buildProbabilityTableFromMediaFile fileName length

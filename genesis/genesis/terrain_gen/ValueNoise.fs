@@ -6,6 +6,7 @@ open HeightMap
 let private dimming = ConfigurationManager.AppSettings.Item("dimming") |> float
 let private minLight = ConfigurationManager.AppSettings.Item("minLight") |> float
 let private lightBoost = ConfigurationManager.AppSettings.Item("lightBoost") |> float
+let private zoomLevel = ConfigurationManager.AppSettings.Item("zoomLevel") |> float
 
 // use bilinear interpolation to smooth out the noise values
 let private bilinearInterpolation (origMap:HeightMap) x y zoomLevel = 
@@ -43,8 +44,9 @@ let rec private turbulence heightMap x y zoom brightnessLevel values =
     | _ -> (bilinearInterpolation heightMap x y 1.0) * 0.025 :: values
 
 // generate a new heigthMap of size * size, using Value Noise method
-let generateNoise size zoomLevel : HeightMap =
+let generateNoise size : HeightMap =
     let rnd = System.Random()
+
     let boost x = x * lightBoost
 
     let map = 

@@ -10,9 +10,9 @@ open Terrain
 open Blur
 
 let private absorptionFactor = ConfigurationManager.AppSettings.Item("absorptionFactor") |> float
-let private erosionFactor = ConfigurationManager.AppSettings.Item("erosionFactor") |> float
+let private landErosionFactor = ConfigurationManager.AppSettings.Item("landErosionFactor") |> float
+let private stoneErosionFactor = ConfigurationManager.AppSettings.Item("stoneErosionFactor") |> float
 let private minimumErodedLandHeight = ConfigurationManager.AppSettings.Item("minimumErodedLandHeight") |> float
-
 let private numberRunOffSteps = ConfigurationManager.AppSettings.Item("numberRunOffSteps") |> int
 
 // Given a height map and a pair of x and y coordinates, find the lowest neighboring point.
@@ -33,7 +33,13 @@ let findLowestNeighbors (heightMap:HeightMap) (x, y) : (int * int) list =
 
 // erode the landmass following the action of water
 let private erode x y (landmassMap:HeightMap) =
-    match landmassMap.Get x y with 
+    let v = (landmassMap.Get x y)
+    
+    let erosionFactor = match isMountain v with
+                        | true -> stoneErosionFactor
+                        | false -> landErosionFactor
+
+    match v with 
     | currentHeight when currentHeight > minimumErodedLandHeight -> landmassMap.Substract x y erosionFactor
     | _ -> ignore() // do not erode past this point
 

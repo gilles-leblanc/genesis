@@ -9,7 +9,7 @@ let private landCornerInitValue = ConfigurationManager.AppSettings.Item("landCor
 let private seaCornerInitValue = ConfigurationManager.AppSettings.Item("seaCornerInitValue") |> float
 
 // set the four corners to random values
-let initCorners (hm:HeightMap) (rnd:System.Random) =
+let initCorners (hm:HeightMap) (rnd:System.Random) highCornerValue lowCornerValue =
     let size = hm.Size          
    
     // init a single corner value
@@ -27,12 +27,19 @@ let initCorners (hm:HeightMap) (rnd:System.Random) =
     // then we choose a random value to pick a corner which we will overwrite 
     // to contain our first KeyValue
     let firstCorner = rnd.Next(0, 3)
-    initCorner hm firstCorner landCornerInitValue
+    initCorner hm firstCorner highCornerValue
 
     // next we choose the next corner to receive a predetermined value by selecting the corner,
     // x places from this None
     let secondCorner = (firstCorner + rnd.Next(1, 3)) % 4
-    initCorner hm secondCorner seaCornerInitValue   
+    initCorner hm secondCorner lowCornerValue   
+
+// Call initCorners with predefined highCorner and lowCorner values from the config file
+let initCornersWithConfigValues (hm:HeightMap) (rnd:System.Random) =
+    initCorners hm rnd landCornerInitValue seaCornerInitValue
+
+let initCornersWithHighCornerValues (hm:HeightMap) (rnd:System.Random) =
+    initCorners hm rnd landCornerInitValue landCornerInitValue
 
 // set the center value of the current matrix to the average of all middle values + variation function
 let center (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
@@ -62,7 +69,7 @@ let middle (hm:HeightMap) (x1, y1) (x2, y2) (x3, y3) (x4, y4) (variation) =
     if hm.Get (avg x3 x4) y3 = 0.0 then
         hm.Set (avg x3 x4) y3 (avg (hm.Get x3 y3) (hm.Get x4 y4) |> variation)           
     
-let midpointDisplacement hm =
+let midpointDisplacement hm initCornersFunction =
     let rec displace (hm) (x1, y1) (x4, y4) (rnd) (spread) (spreadReduction) =
         let ulCorner = (x1, y1) 
         let urCorner = (x4, y1)
@@ -86,5 +93,5 @@ let midpointDisplacement hm =
     let rnd = System.Random()
     let size = hm.Size - 1    
     
-    initCorners hm rnd
+    initCornersFunction hm rnd
     displace hm (0, 0) (size, size) rnd startingSpread spreadReduction

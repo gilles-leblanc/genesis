@@ -94,24 +94,16 @@ let runoff (landmassMap:HeightMap) (rainMap:HeightMap) step =
 
 let terraform () =       
     let landmassMap = newHeightMap 10
-    midpointDisplacement landmassMap
+    midpointDisplacement landmassMap initCornersWithConfigValues
+
+    let humidityMap = newHeightMap 10
+    midpointDisplacement humidityMap initCornersWithConfigValues
 
     let rainMap = newHeightMap 10
-    midpointDisplacement rainMap
-
-    // make a copy of the rainMap because runoff changes the map
-    let rainMap' = newHeightMap' rainMap.Size (rainMap.Map |> Array.copy)
+    midpointDisplacement rainMap initCornersWithHighCornerValues
 
     // watershed generation
-    let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap' [1..numberRunOffSteps]    
+    let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap [1..numberRunOffSteps]    
+ 
 
-    let png = new Bitmap(landmassMap.Size, landmassMap.Size) 
-
-    for x in [0..landmassMap.Size-1] do
-        for y in [0..landmassMap.Size-1] do
-            let red, green, blue = gradientColors (rainMap.Get x y) 0.0 0.0
-            png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
-
-    png.Save("terraform.png", Imaging.ImageFormat.Png) |> ignore   
-
-    makeTerrain gradientColors landmassMap rainMap watershedMap
+    makeTerrain gradientColors landmassMap humidityMap watershedMap

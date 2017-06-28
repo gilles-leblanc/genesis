@@ -32,7 +32,7 @@ let blur (heightMap:HeightMap) (blurFilter:Filter) =
 // Take a height map and blur it using a Gaussian blur
 let gaussianBlur (heightMap:HeightMap) = 
     let gaussianFilter = { Positions = [-3..3]; 
-                           Kernel = [| 0.006; 0.061; 0.242; 0.383; 0.242; 0.061; 0.006 |]}
+                           Kernel = [| 0.0; 0.00135; 0.157305; 0.68269; 0.157305; 0.00135; 0.0 |]}
 
     blur heightMap gaussianFilter
 

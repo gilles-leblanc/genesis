@@ -105,5 +105,10 @@ let terraform () =
     // watershed generation
     let watershedMap = List.fold (fun acc elem -> runoff landmassMap acc elem) rainMap [1..numberRunOffSteps]    
  
+    // blur
+    gaussianBlur landmassMap
+
+    // fill in rivers
+    
 
     makeTerrain gradientColors landmassMap humidityMap watershedMap

@@ -74,9 +74,6 @@ let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) (watersh
     // apply filters during conversion
     let png = new Bitmap(heightMap.Size, heightMap.Size)
 
-    //gaussianBlur heightMap       // apply gaussian blurring to the height map
-    //meanFilter heightMap         // apply mean filter blurring
-    
     for x in [0..heightMap.Size-1] do
         for y in [0..heightMap.Size-1] do
             let red, green, blue = colorFunction (heightMap.Get x y |> normalizeValue)

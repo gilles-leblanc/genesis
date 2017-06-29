@@ -13,6 +13,7 @@ let private absorptionFactor = ConfigurationManager.AppSettings.Item("absorption
 let private landErosionFactor = ConfigurationManager.AppSettings.Item("landErosionFactor") |> float
 let private stoneErosionFactor = ConfigurationManager.AppSettings.Item("stoneErosionFactor") |> float
 let private minimumErodedLandHeight = ConfigurationManager.AppSettings.Item("minimumErodedLandHeight") |> float
+let private minimumErodedStoneHeight = ConfigurationManager.AppSettings.Item("minimumErodedStoneHeight") |> float
 let private numberRunOffSteps = ConfigurationManager.AppSettings.Item("numberRunOffSteps") |> int
 
 // Given a height map and a pair of x and y coordinates, find the lowest neighboring point.
@@ -35,12 +36,12 @@ let findLowestNeighbors (heightMap:HeightMap) (x, y) : (int * int) list =
 let private erode x y (landmassMap:HeightMap) =
     let v = (landmassMap.Get x y)
     
-    let erosionFactor = match isMountain v with
-                        | true -> stoneErosionFactor
-                        | false -> landErosionFactor
+    let erosionFactor, minimumHeight = match isMountain v with
+                                       | true -> stoneErosionFactor, minimumErodedStoneHeight
+                                       | false -> landErosionFactor, minimumErodedLandHeight
 
     match v with 
-    | currentHeight when currentHeight > minimumErodedLandHeight -> landmassMap.Substract x y erosionFactor
+    | currentHeight when currentHeight > minimumHeight -> landmassMap.Substract x y erosionFactor
     | _ -> ignore() // do not erode past this point
 
 // simulate water run off on the height map

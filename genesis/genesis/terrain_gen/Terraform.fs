@@ -109,7 +109,7 @@ let terraform () =
     // blur
     gaussianBlur landmassMap
 
-    // fill in rivers
+    // TODO: fill in rivers
     
 
     makeTerrain gradientColors landmassMap humidityMap watershedMap

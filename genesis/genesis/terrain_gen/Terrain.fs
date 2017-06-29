@@ -12,7 +12,8 @@ type Range = { Start:int; End:int; LowColor:int * int * int; HighColor:int * int
 let private blueRange = { Start=0; End=74; LowColor=70, 150, 195; HighColor=120, 200, 245 }    
 let private brownRange = { Start=75; End=180; LowColor=180, 139, 59; HighColor=224, 199, 90 }
 let private greyRange = { Start=181; End=255; LowColor=69, 69, 69; HighColor=129, 129, 129 }
-let private greenRange = { Start=150; End=255; LowColor=59, 99, 30; HighColor=149, 199, 99 }
+let private lightGreenRange = { Start=75; End=149; LowColor=156, 192, 83; HighColor=216, 245, 143 }
+let private darkGreenRange = { Start=150; End=255; LowColor=59, 99, 30; HighColor=149, 199, 99 }
 
 // get wether a value is in a range
 let private isInRange range value = 
@@ -55,7 +56,9 @@ let getColors mapPoint rainPoint watershedPoint pctFun =
     match mapPoint, rainPoint, watershedPoint with
     | x, y, z when isWater x -> gradient (pctFun x blueRange) blueRange
     | x, y, z when isPlain x &&                                                         // use brownRange pct with
-                   isInRange greenRange y -> gradient (pctFun x brownRange) greenRange  // greenRange values to match  
+                   isInRange lightGreenRange y -> gradient (pctFun x brownRange) lightGreenRange  // greenRange values to match  
+    | x, y, z when isPlain x &&                                                         // use brownRange pct with
+                   isInRange darkGreenRange y -> gradient (pctFun x brownRange) darkGreenRange  // greenRange values to match  
     | x, y, z when isPlain x -> gradient (pctFun x brownRange) brownRange               // underlying terrain
     | x, y, z when isMountain x -> gradient (pctFun x greyRange) greyRange
     | x, y, z -> failwith (sprintf "invalid colors operation mp:%f rp:%f wp:%f" x y z)

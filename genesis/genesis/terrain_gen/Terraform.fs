@@ -4,7 +4,6 @@ open System.Configuration
 open System.Drawing
 
 open HeightMap  
-open ValueNoise
 open MidpointDisplacement
 open Terrain
 open Blur
@@ -110,6 +109,5 @@ let terraform () =
     gaussianBlur landmassMap
 
     // TODO: fill in rivers
-    
 
-    makeTerrain gradientColors landmassMap humidityMap watershedMap
+    makeTerrain gradientColors landmassMap humidityMap

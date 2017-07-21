@@ -10,6 +10,7 @@ open MidpointDisplacement
 open ValueNoise
 open Terrain
 open Terraform
+open SketchMap
 
 let private generateMap option =
     match option with
@@ -18,7 +19,7 @@ let private generateMap option =
         midpointDisplacement map initCornersWithConfigValues
         map
     | ValueNoise ->
-        generateNoise 1200 
+        generateNoise 1025 
 
 let private generateName length fileName = 
     let table = buildProbabilityTableFromMediaFile fileName length
@@ -31,12 +32,14 @@ let private serializeName length inFileName outFileName =
 let private generateTerrain () =
     let map = generateMap MidpointDisplacement
     let rainMap = generateMap MidpointDisplacement
-    let waterShedMap = newHeightMap 10
     map |> heightMapToPng "out.png"
-    makeTerrain gradientColors map rainMap waterShedMap
+    makeTerrain gradientColors map rainMap
 
 let private terraform () =
     terraform ()
+
+let private sketch () =
+    sketch ()
 
 [<EntryPoint>]
 let main argv =
@@ -48,6 +51,7 @@ let main argv =
     | NameSerializer opts -> serializeName opts.Length opts.InFileName opts.OutFileName |> ignore
     | TerrainGenerator -> generateTerrain () |> ignore
     | Terraform -> terraform () |> ignore
+    | Sketch -> sketch () |> ignore
     | NoOptions -> ()
 
     0 

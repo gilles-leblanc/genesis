@@ -52,27 +52,26 @@ let private gradient pct range =
 let private fullColor value range = 1.0
 
 // get a specific color for a specific point using a color function
-let getColors mapPoint rainPoint watershedPoint pctFun =         
-    match mapPoint, rainPoint, watershedPoint with
-    | x, y, z when isWater x -> gradient (pctFun x blueRange) blueRange
-    | x, y, z when isPlain x &&                                                         // use brownRange pct with
+let getColors mapPoint rainPoint pctFun =         
+    match mapPoint, rainPoint with
+    | x, y when isWater x -> gradient (pctFun x blueRange) blueRange
+    | x, y when isPlain x &&                                                         // use brownRange pct with
                    isInRange lightGreenRange y -> gradient (pctFun x brownRange) lightGreenRange  // greenRange values to match  
-    | x, y, z when isPlain x &&                                                         // use brownRange pct with
+    | x, y when isPlain x &&                                                         // use brownRange pct with
                    isInRange darkGreenRange y -> gradient (pctFun x brownRange) darkGreenRange  // greenRange values to match  
-    | x, y, z when isPlain x -> gradient (pctFun x brownRange) brownRange               // underlying terrain
-    | x, y, z when isMountain x -> gradient (pctFun x greyRange) greyRange
-    | x, y, z -> failwith (sprintf "invalid colors operation mp:%f rp:%f wp:%f" x y z)
+    | x, y when isPlain x -> gradient (pctFun x brownRange) brownRange               // underlying terrain
+    | x, y when isMountain x -> gradient (pctFun x greyRange) greyRange
+    | x, y -> failwith (sprintf "invalid colors operation mp:%f rp:%f" x y)
 
 // convert a heightmap value to rgb solid colors values
-let solidColors mapPoint rainPoint waterShedPoint =
-    getColors mapPoint rainPoint waterShedPoint fullColor
+let solidColors mapPoint rainPoint =
+    getColors mapPoint rainPoint fullColor
 
 // convert a heightmap value to rgb gradient colors values
-let gradientColors mapPoint rainPoint waterShedPoint =  
-    getColors mapPoint rainPoint waterShedPoint 
-             (fun value range -> float (convertFloatToInt value - range.Start) / 100.0)
+let gradientColors mapPoint rainPoint =  
+    getColors mapPoint rainPoint (fun value range -> float (convertFloatToInt value - range.Start) / 100.0)
 
-let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) (watershedMap:HeightMap) = 
+let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) = 
     // convert 1 float value to rgb
     // apply filters during conversion
     let png = new Bitmap(heightMap.Size, heightMap.Size)
@@ -81,7 +80,7 @@ let makeTerrain colorFunction (heightMap:HeightMap) (rainMap:HeightMap) (watersh
         for y in [0..heightMap.Size-1] do
             let red, green, blue = colorFunction (heightMap.Get x y |> normalizeValue)
                                                  (rainMap.Get x y |> normalizeValue) 
-                                                 (watershedMap.Get x y |> normalizeValue)
             png.SetPixel(x, y, Color.FromArgb(255, red, green, blue))
     
     png.Save("terrain.png", Imaging.ImageFormat.Png) |> ignore
+    png
